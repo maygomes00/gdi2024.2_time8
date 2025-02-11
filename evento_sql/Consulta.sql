@@ -249,3 +249,75 @@ BEGIN
     END IF;
 END;
 /
+
+
+
+-- Preço médio dos ingressos por evento ordenados do maior para o menor
+-- SQL: AVG, GROUP BY, ORDER BY
+SELECT i.id_evento, AVG(pi.preco) AS preco_medio
+FROM Ingresso i
+JOIN Preco_Ingressos pi ON i.id_evento = pi.evento AND i.tipo = pi.tipo
+WHERE i.ingresso_status != 'cancelado'
+GROUP BY i.id_evento
+ORDER BY preco_medio DESC;
+
+-- Eventos que arrecadaram mais de 1000 com venda de ingressos
+-- SQL: HAVING
+SELECT i.id_evento, SUM(pi.preco) AS total_arrecadado
+FROM Ingresso i
+JOIN Preco_Ingressos pi ON i.id_evento = pi.evento AND i.tipo = pi.tipo
+WHERE i.ingresso_status != 'cancelado'
+GROUP BY i.id_evento
+HAVING SUM(pi.preco) > 1000;
+
+-- Participantes com ingressos para eventos com mais de 100 pessoas
+SELECT p.id_participante, np.nome, np.sobrenome
+FROM Participante p
+JOIN Nomes_Participantes np ON p.cpf = np.cpf
+WHERE p.id_participante IN (
+    SELECT i.id_participante
+    FROM Ingresso i
+    JOIN Evento e ON i.id_evento = e.id_evento
+    WHERE e.capacidade_maxima > 200 AND i.ingresso_status != 'cancelado'
+);
+
+-- Participantes que são palestrantes ou alunos
+--SQL: UNION
+SELECT p.id_participante, np.nome, np.sobrenome, 'Palestrante' AS tipo
+FROM Participante p
+JOIN Nomes_Participantes np ON p.cpf = np.cpf
+JOIN Palestrante pal ON p.id_participante = pal.id_participante
+UNION
+SELECT p.id_participante, np.nome, np.sobrenome, 'Aluno' AS tipo
+FROM Participante p
+JOIN Nomes_Participantes np ON p.cpf = np.cpf
+JOIN Aluno alu ON p.id_participante = alu.id_participante;
+
+-- Eventos com pelo menos uma sessão de duração acima da média
+--SQL: Subconsulta com ANY (a subconsulta calcula a duração média das sessões para cada evento.)
+SELECT e.id_evento, e.nome
+FROM Evento e
+JOIN Sessao s ON e.id_evento = s.evento
+WHERE s.duracao > ANY (
+    SELECT AVG(duracao)
+    FROM Sessao
+    GROUP BY evento
+)
+GROUP BY e.id_evento, e.nome;
+
+-- Eventos onde todas as sessões têm duração acima da média
+--SQL: Subconsulta com ALL (a subconsulta calcula a duração média das sessões para cada evento.)
+SELECT e.id_evento, e.nome
+FROM Evento e
+JOIN Sessao s ON e.id_evento = s.evento
+WHERE s.duracao > ALL (
+    SELECT AVG(duracao)
+    FROM Sessao
+    GROUP BY evento
+)
+GROUP BY e.id_evento, e.nome;
+
+-- Criar um índice para otimizar buscas por status do ingresso
+-- SQL: CREATE INDEX
+CREATE INDEX idx_ingresso_status
+ON Ingresso (ingresso_status);
