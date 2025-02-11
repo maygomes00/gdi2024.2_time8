@@ -217,6 +217,17 @@ WHERE a.valor_arrecadado = (SELECT MIN(valor_arrecadado_max) FROM
 
 
 
--- Alterar a tabela de contratos para adicionar um novo campo de de data
+-- Alterar a tabela de contratos para adicionar um novo campo de data
 -- SQL: ALTER TABLE
 ALTER TABLE Contrato ADD data_termino DATE;
+
+
+
+-- Update em contrato para colocar valor no novo campo de data_termino
+
+
+-- Atualizar status de ingresso para "usado" quando o evento já ocorreu
+-- SQL: UPDATE, SUBCONSULTA COM IN
+UPDATE Ingresso
+SET ingresso_status = 'usado'
+WHERE id_evento IN (SELECT id_evento FROM Evento WHERE data_fim < SYSDATE);
