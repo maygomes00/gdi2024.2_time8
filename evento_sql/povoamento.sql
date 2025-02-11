@@ -190,7 +190,6 @@ INSERT INTO Sessao (
 
 -- MINISTRAR
 
-
 INSERT INTO Ministrar (palestrante, sessao)
 VALUES (1, 1);
 

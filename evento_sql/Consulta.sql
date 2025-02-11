@@ -1,5 +1,5 @@
 -- Custo total dos serviços contratados para cada evento ordenados de maior para menor
--- SQL usados: SELECT-FROM-WHERE, GROUP BY, ORDER BY
+-- SQL: SELECT-FROM-WHERE, GROUP BY, ORDER BY
 SELECT c.evento, SUM(valor) AS custo_evento
 FROM Contrato c
 WHERE contrato_status != 'Cancelado'
@@ -9,7 +9,7 @@ ORDER BY custo_evento DESC;
 
 
 -- Quantidade de participantes que tem ingresso para cada evento
--- SQL usados: LEFT JOIN,  GROUP BY
+-- SQL: LEFT JOIN
 SELECT e.id_evento, COUNT(i.id_participante) AS numero_participantes
 from Evento e
 LEFT JOIN Ingresso i ON i.id_evento = e.id_evento AND ingresso_status != 'cancelado'
@@ -18,8 +18,8 @@ GROUP BY e.id_evento;
 
 
 -- Função que informa quantidade de participantes de um tipo especifico em um evento
--- SQL usados: COUNT , INNER JOIN, LEFT JOIN, SELECT-FROM-WHERE, IS NOT NULL
--- PL usados: CREATE FUNCTION, SELECT INTO
+-- SQL: COUNT , INNER JOIN, IS NOT NULL
+-- PL: CREATE FUNCTION, SELECT INTO
 CREATE OR REPLACE FUNCTION ContaParticipanteTipo
 (
     f_id_evento NUMBER, 
@@ -71,8 +71,11 @@ GROUP BY e.id_evento;
 
 
 -- Participantes que tem nome que começa com a letra "a"
---
-
+-- SQL: LIKE
+SELECT p.id_participante, p.cpf, np.nome, np.sobrenome, p.email
+from Participante p
+LEFT JOIN Nomes_Participantes np ON np.cpf = p.cpf
+WHERE np.nome LIKE 'A%';
 
 
 
@@ -82,4 +85,22 @@ GROUP BY e.id_evento;
 
 
 
--- 
+-- Obtem evento que arrecadou mais com venda de ingressos
+-- SQL: SUBCONSULTA COM OPERADOR RELACIONAL, MAX
+SELECT e.id_evento, e.nome, a.valor_arrecadado
+FROM Evento e
+JOIN (
+    SELECT i.id_evento, SUM(pi.preco) AS valor_arrecadado 
+    FROM Ingresso i
+    JOIN Preco_Ingressos pi ON i.id_evento = pi.evento AND i.tipo = pi.tipo
+    WHERE i.ingresso_status != 'cancelado'
+    GROUP BY i.id_evento
+) a ON a.id_evento = e.id_evento
+WHERE a.valor_arrecadado = (SELECT MAX(valor_arrecadado_max) FROM 
+(
+    SELECT i.id_evento, SUM(pi.preco) AS valor_arrecadado_max 
+    FROM Ingresso i
+    JOIN Preco_Ingressos pi ON i.id_evento = pi.evento AND i.tipo = pi.tipo
+    WHERE i.ingresso_status != 'cancelado'
+    GROUP BY i.id_evento
+));
