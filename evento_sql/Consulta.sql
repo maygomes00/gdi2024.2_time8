@@ -217,4 +217,6 @@ WHERE a.valor_arrecadado = (SELECT MIN(valor_arrecadado_max) FROM
 
 
 
---  
+-- Alterar a tabela de contratos para adicionar um novo campo de de data
+-- SQL: ALTER TABLE
+ALTER TABLE Contrato ADD data_termino DATE;
