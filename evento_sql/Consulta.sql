@@ -235,3 +235,17 @@ WHERE id_evento IN (SELECT id_evento FROM Evento WHERE data_fim < SYSDATE);
 
 
 -- Consultar quais eventos já estão com a capacidade máxima (BETWEEN)
+
+
+
+-- Trigger para evitar que contratos sejam excluídos se estiverem ativos
+-- PL: CREATE OR REPLACE TRIGGER (LINHA)
+CREATE OR REPLACE TRIGGER trg_prevent_delete_contrato
+BEFORE DELETE ON Contrato
+FOR EACH ROW
+BEGIN
+    IF :OLD.contrato_status = 'Ativo' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Não é permitido excluir contratos ativos.');
+    END IF;
+END;
+/
