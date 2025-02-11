@@ -64,7 +64,7 @@ GROUP BY e.id_evento;
 
 
 
--- Adicionar Participante
+-- Adicionar Evento
 -- 
 
 
@@ -90,12 +90,14 @@ WHERE np.nome LIKE 'A%';
 SELECT e.id_evento, e.nome, a.valor_arrecadado
 FROM Evento e
 JOIN (
+-- Obtem soma do preço de todos os ingressos que não foram cancelados, separados por evento. 
     SELECT i.id_evento, SUM(pi.preco) AS valor_arrecadado 
     FROM Ingresso i
     JOIN Preco_Ingressos pi ON i.id_evento = pi.evento AND i.tipo = pi.tipo
     WHERE i.ingresso_status != 'cancelado'
     GROUP BY i.id_evento
 ) a ON a.id_evento = e.id_evento
+-- Repete o processo para obter a soma dos ingressos, mas faz com que o evento que será exibido seja o que tem o valor maximo.
 WHERE a.valor_arrecadado = (SELECT MAX(valor_arrecadado_max) FROM 
 (
     SELECT i.id_evento, SUM(pi.preco) AS valor_arrecadado_max 
@@ -104,3 +106,31 @@ WHERE a.valor_arrecadado = (SELECT MAX(valor_arrecadado_max) FROM
     WHERE i.ingresso_status != 'cancelado'
     GROUP BY i.id_evento
 ));
+
+
+
+-- Obter evento que arrecadou menos com venda de ingressos
+-- SQL: MIN
+SELECT e.id_evento, e.nome, a.valor_arrecadado
+FROM Evento e
+JOIN (
+-- Obtem soma do preço de todos os ingressos que não foram cancelados, separados por evento. 
+    SELECT i.id_evento, SUM(pi.preco) AS valor_arrecadado 
+    FROM Ingresso i
+    JOIN Preco_Ingressos pi ON i.id_evento = pi.evento AND i.tipo = pi.tipo
+    WHERE i.ingresso_status != 'cancelado'
+    GROUP BY i.id_evento
+) a ON a.id_evento = e.id_evento
+-- Repete o processo para obter a soma dos ingressos, mas faz com que o evento que será exibido seja o que tem o valor minimo.
+WHERE a.valor_arrecadado = (SELECT MIN(valor_arrecadado_max) FROM 
+(
+    SELECT i.id_evento, SUM(pi.preco) AS valor_arrecadado_max 
+    FROM Ingresso i
+    JOIN Preco_Ingressos pi ON i.id_evento = pi.evento AND i.tipo = pi.tipo
+    WHERE i.ingresso_status != 'cancelado'
+    GROUP BY i.id_evento
+));
+
+
+
+--  

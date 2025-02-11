@@ -1,14 +1,29 @@
+-- SEQUENCES
+DROP SEQUENCE IF EXISTS seq_evento;
+DROP SEQUENCE IF EXISTS seq_participante;
+DROP SEQUENCE IF EXISTS seq_organizador;
+DROP SEQUENCE IF EXISTS seq_sessao;
+DROP SEQUENCE IF EXISTS seq_fornecedor;
+DROP SEQUENCE IF EXISTS seq_certificado;
+
+CREATE SEQUENCE seq_evento START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_participante START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_organizador START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_sessao START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_fornecedor START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_certificado START WITH 1 INCREMENT BY 1;
+
 
 -- ORGANIZADORES
 
 INSERT INTO Organizador (id_organizador, nome_completo, cargo, departamento, supervisor)
-VALUES (1, 'Carlos Silva', 'Diretor', 'Eventos', NULL);
+VALUES (seq_organizador.NEXTVAL, 'Carlos Silva', 'Diretor', 'Eventos', NULL);
 
 INSERT INTO Organizador (id_organizador, nome_completo, cargo, departamento, supervisor)
-VALUES (2, 'Mariana Souza', 'Coordenadora', 'Marketing', 1);
+VALUES (seq_organizador.NEXTVAL, 'Mariana Souza', 'Coordenadora', 'Marketing', 1);
 
 INSERT INTO Organizador (id_organizador, nome_completo, cargo, departamento, supervisor)
-VALUES (3, 'Rafael Lima', 'Analista', 'Eventos', 2);
+VALUES (seq_organizador.NEXTVAL, 'Rafael Lima', 'Analista', 'Eventos', 2);
 
 
 -- ENDEREÇOS
@@ -20,13 +35,13 @@ INSERT INTO Endereco (CEP, Rua, Numero, Bairro, Estado, Cidade)
 VALUES ('87654-321', 'Avenida B', '200', 'Bairro Sul', 'RJ', 'Rio de Janeiro');
 
 
--- EVENTOS
+-- EVENTOS (garantir que os eventos sejam inseridos antes de Preco_Ingressos)
 
 INSERT INTO Evento (
   id_evento, nome, categoria, data_inicio, data_fim, CEP,
   capacidade_maxima, organizador
 ) VALUES (
-  1,
+  seq_evento.NEXTVAL,
   'Tech Summit',
   'Congresso',
   TO_DATE('2025-06-01','YYYY-MM-DD'),
@@ -40,7 +55,7 @@ INSERT INTO Evento (
   id_evento, nome, categoria, data_inicio, data_fim, CEP,
   capacidade_maxima, organizador
 ) VALUES (
-  2,
+  seq_evento.NEXTVAL,
   'Startup Workshop',
   'Workshop',
   TO_DATE('2025-07-10','YYYY-MM-DD'),
@@ -49,6 +64,27 @@ INSERT INTO Evento (
   150,
   2
 );
+
+
+-- PRECOS INGRESSOS (após inserção dos eventos)
+
+INSERT INTO Preco_Ingressos (evento, tipo, preco)
+VALUES (1, 'geral', 120.00);
+
+INSERT INTO Preco_Ingressos (evento, tipo, preco)
+VALUES (1, 'VIP', 300.00);
+
+INSERT INTO Preco_Ingressos (evento, tipo, preco)
+VALUES (1, 'estudante', 60.00);
+
+INSERT INTO Preco_Ingressos (evento, tipo, preco)
+VALUES (2, 'geral', 100.00);
+
+INSERT INTO Preco_Ingressos (evento, tipo, preco)
+VALUES (2, 'VIP', 250.00);
+
+INSERT INTO Preco_Ingressos (evento, tipo, preco)
+VALUES (2, 'estudante', 50.00);
 
 
 -- NOMES_Participantes
@@ -69,16 +105,16 @@ VALUES ('44444444400', 'Diego', 'Lima');
 -- PARTICIPANTES
 
 INSERT INTO Participante (id_participante, cpf, email)
-VALUES (1, '11111111100', 'ana.pereira@email.com');
+VALUES (seq_participante.NEXTVAL, '11111111100', 'ana.pereira@email.com');
 
 INSERT INTO Participante (id_participante, cpf, email)
-VALUES (2, '22222222200', 'bruno.oliveira@email.com');
+VALUES (seq_participante.NEXTVAL, '22222222200', 'bruno.oliveira@email.com');
 
 INSERT INTO Participante (id_participante, cpf, email)
-VALUES (3, '33333333300', 'carla.moraes@email.com');
+VALUES (seq_participante.NEXTVAL, '33333333300', 'carla.moraes@email.com');
 
 INSERT INTO Participante (id_participante, cpf, email)
-VALUES (4, '44444444400', 'diego.lima@email.com');
+VALUES (seq_participante.NEXTVAL, '44444444400', 'diego.lima@email.com');
 
 
 -- TELEFONE_PARTICIPANTE
@@ -119,27 +155,6 @@ INSERT INTO Externo (id_participante, instituicao)
 VALUES (4, 'Empresa Consultoria XYZ');
 
 
--- PREÇO_INGRESSOS
-
-INSERT INTO Preco_Ingressos (evento, tipo, preco)
-VALUES (1, 'geral', 120.00);
-
-INSERT INTO Preco_Ingressos (evento, tipo, preco)
-VALUES (1, 'VIP', 300.00);
-
-INSERT INTO Preco_Ingressos (evento, tipo, preco)
-VALUES (1, 'estudante', 60.00);
-
-INSERT INTO Preco_Ingressos (evento, tipo, preco)
-VALUES (2, 'geral', 100.00);
-
-INSERT INTO Preco_Ingressos (evento, tipo, preco)
-VALUES (2, 'VIP', 250.00);
-
-INSERT INTO Preco_Ingressos (evento, tipo, preco)
-VALUES (2, 'estudante', 50.00);
-
-
 -- INGRESSO 
 
 INSERT INTO Ingresso (id_evento, id_participante, tipo, ingresso_status, data_emissao)
@@ -161,7 +176,7 @@ INSERT INTO Sessao (
   id_sessao, titulo, descricao, tipo, duracao, capacidade,
   evento, data_inicio_sessao, data_fim_sessao
 ) VALUES (
-  1,
+  seq_sessao.NEXTVAL,
   'Abertura Tech Summit',
   'Palestra e abertura oficial do congresso',
   'Palestra',
@@ -176,7 +191,7 @@ INSERT INTO Sessao (
   id_sessao, titulo, descricao, tipo, duracao, capacidade,
   evento, data_inicio_sessao, data_fim_sessao
 ) VALUES (
-  2,
+  seq_sessao.NEXTVAL,
   'Mentoria de Startups',
   'Workshop prático para desenvolvimento de ideias',
   'Workshop',
@@ -206,10 +221,10 @@ VALUES (3, 2, 2);
 -- FORNECEDOR
 
 INSERT INTO Fornecedor (id_fornecedor, nome, tipo_servico, telefone, email)
-VALUES (1, 'Tech Sound', 'Audio e Vídeo', '(11) 99999-0001', 'contato@techsound.com');
+VALUES (seq_fornecedor.NEXTVAL, 'Tech Sound', 'Audio e Vídeo', '(11) 99999-0001', 'contato@techsound.com');
 
 INSERT INTO Fornecedor (id_fornecedor, nome, tipo_servico, telefone, email)
-VALUES (2, 'Catering Gourmet', 'Buffet', '(11) 99999-0002', 'gourmet@catering.com');
+VALUES (seq_fornecedor.NEXTVAL, 'Catering Gourmet', 'Buffet', '(11) 99999-0002', 'gourmet@catering.com');
 
 
 -- CONTRATO
@@ -244,7 +259,6 @@ INSERT INTO Contrato (
 
 
 -- CERTIFICADO
-
 
 INSERT INTO Certificado (
   numero_certificado, data_emissao, carga_horaria, certificado_status,
