@@ -64,9 +64,93 @@ GROUP BY e.id_evento;
 
 
 
--- Adicionar Evento
--- 
+-- Adicionar Participante
+-- SQL: INSERT INTO
+-- PL: CREATE PROCEDURE, IF ELSIF, EXCEPTION WHEN
+CREATE OR REPLACE PROCEDURE adicionar_participante 
+(
+    -- Dados gerais de Participantes
+    p_cpf VARCHAR2,
+    p_nome VARCHAR2,
+    p_sobrenome VARCHAR2,
+    p_email VARCHAR2,
+    p_telefone VARCHAR2 DEFAULT NULL,
+    p_tipo VARCHAR2,
+    -- Dados de tipo Palestrante
+    p_bibliografia VARCHAR2 DEFAULT NULL, 
+    p_perfil_linkedin VARCHAR2 DEFAULT NULL,
+    -- Dados de tipo Aluno
+    p_matricula VARCHAR2 DEFAULT NULL,
+    -- Dados de tipo Professor
+    p_id_professor VARCHAR2 DEFAULT NULL,
+    -- Dados de tipo Externo
+    p_instituicao VARCHAR2 DEFAULT NULL
+) 
+-- Variavel que contem o id do participante
+IS v_id_participante NUMBER := seq_participante.NEXTVAL;
+BEGIN
+    -- Guarda id participante na variavel
+    SELECT seq_participante.NEXTVAL INTO v_id_participante FROM dual;
 
+    -- Adiciona participante em Nomes_Participantes
+    INSERT INTO Nomes_Participantes (cpf, nome, sobrenome)
+    VALUES (p_cpf, p_nome, p_sobrenome);
+
+    -- Adiciona participante em Participante
+    INSERT INTO Participante (id_participante, cpf, email)
+    VALUES (v_id_participante, p_cpf, p_email);
+
+    -- Adiciona participante em Telefone_Participante
+    INSERT INTO Telefone_Participante (participante, telefone)
+    VALUES (v_id_participante, p_telefone);
+
+    -- Adiciona participante se for Palestrante
+    IF p_tipo = 'Palestrante' THEN
+    INSERT INTO Palestrante (id_participante, biografia, perfil_linkedin)
+    VALUES (v_id_participante, p_bibliografia, p_perfil_linkedin);
+    -- Adiciona participante se for Aluno
+    ELSIF p_tipo = 'Aluno' AND p_matricula IS NOT NULL THEN
+    INSERT INTO Aluno (id_participante, matricula)
+    VALUES (v_id_participante, p_matricula);
+    ELSIF p_tipo = 'Professor' AND p_id_professor IS NOT NULL THEN
+    INSERT INTO Professor (id_participante, id_professor)
+    VALUES (v_id_participante, p_id_professor);
+    ELSIF p_tipo = 'Externo' AND p_instituicao IS NOT NULL THEN
+    INSERT INTO Externo (id_participante, instituicao)
+    VALUES (v_id_participante, p_instituicao);
+    ELSE 
+        RAISE_APPLICATION_ERROR(-20004, 'Erro: Tipo de participante inválido pro algum motivo.');
+    END IF;
+
+    COMMIT;
+EXCEPTION
+    -- Erro em caso de Chave principal duplicada
+    WHEN DUP_VAL_ON_INDEX THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20002, 'Erro: Participante já cadastrado.');
+
+    -- Outros erros
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20003, 'Erro desconhecido: ' || SQLERRM);
+
+END adicionar_participante;
+/
+-- Adicionando novo participante do tipo Aluno
+BEGIN
+    adicionar_participante (
+        '51551435105', 'Everton', 'Moura', 'EMoura@gmail.com', '(46) 91245-2037',
+        'Aluno', NULL, NULL, 'M2187239', NULL, NULL
+    );
+END;
+/
+-- Exibe participantes
+SELECT * FROM PARTICIPANTE;
+SELECT * FROM NOMES_PARTICIPANTES;
+SELECT * FROM PALESTRANTE;
+SELECT * FROM ALUNO;
+SELECT * FROM PROFESSOR;
+SELECT * FROM EXTERNO;
 
 
 
