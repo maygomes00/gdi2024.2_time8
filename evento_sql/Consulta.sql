@@ -231,3 +231,7 @@ ALTER TABLE Contrato ADD data_termino DATE;
 UPDATE Ingresso
 SET ingresso_status = 'usado'
 WHERE id_evento IN (SELECT id_evento FROM Evento WHERE data_fim < SYSDATE);
+
+
+
+-- Consultar quais eventos já estão com a capacidade máxima (BETWEEN)
