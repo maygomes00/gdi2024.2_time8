@@ -332,3 +332,18 @@ FROM Evento e
 JOIN Ingresso i ON e.id_evento = i.id_evento
 JOIN Preco_Ingressos p ON i.id_evento = p.evento AND i.tipo = p.tipo
 GROUP BY e.id_evento, e.nome;
+
+
+
+-- Criar um procedimento para remover um participante de um evento
+-- SQL/PL: DELETE, CASE WHEN, %TYPE
+CREATE OR REPLACE PROCEDURE remover_participante (
+    p_id Participante.id_participante%TYPE
+) AS
+BEGIN
+    DELETE FROM Participa WHERE participante = p_id;
+    DELETE FROM Ingresso WHERE id_participante = p_id;
+    DELETE FROM Participante WHERE id_participante = p_id;
+    DBMS_OUTPUT.PUT_LINE('Participante removido com sucesso.');
+END;
+/
