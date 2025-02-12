@@ -449,3 +449,13 @@ END;
 
 
 
+-- Conceder permissões para um usuário Organizador
+-- SQL: GRANT / REVOKE
+GRANT SELECT, INSERT, UPDATE, DELETE ON Certificado TO Organizador;
+GRANT SELECT ON Evento TO Organizador;
+
+-- Caso precise revogar permissões:
+-- REVOKE SELECT, INSERT, UPDATE, DELETE ON Certificado TO Organizador;
+
+
+
