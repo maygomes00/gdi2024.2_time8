@@ -321,3 +321,14 @@ GROUP BY e.id_evento, e.nome;
 -- SQL: CREATE INDEX
 CREATE INDEX idx_ingresso_status
 ON Ingresso (ingresso_status);
+
+
+
+-- Criar uma view para um relatório de eventos com a receita total
+-- SQL: CREATE VIEW
+CREATE VIEW vw_receita_eventos AS
+SELECT e.id_evento, e.nome, SUM(p.preco) AS receita_total
+FROM Evento e
+JOIN Ingresso i ON e.id_evento = i.id_evento
+JOIN Preco_Ingressos p ON i.id_evento = p.evento AND i.tipo = p.tipo
+GROUP BY e.id_evento, e.nome;
