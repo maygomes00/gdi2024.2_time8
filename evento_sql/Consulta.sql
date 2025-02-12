@@ -335,15 +335,25 @@ GROUP BY e.id_evento, e.nome;
 
 
 
--- Criar um procedimento para remover um participante de um evento
+-- Criar um procedimento para remover um participante completamente do sistema
 -- SQL/PL: DELETE, CASE WHEN, %TYPE
 CREATE OR REPLACE PROCEDURE remover_participante (
     p_id Participante.id_participante%TYPE
 ) AS
 BEGIN
+    -- Removendo todos os registros dependentes (tabelas relacionadas)
+    DELETE FROM Telefone_Participante WHERE participante = p_id;
+    DELETE FROM Externo WHERE id_participante = p_id;
+    DELETE FROM Professor WHERE id_participante = p_id;
+    DELETE FROM Aluno WHERE id_participante = p_id;
+    DELETE FROM Ministrar WHERE palestrante = p_id;
     DELETE FROM Participa WHERE participante = p_id;
     DELETE FROM Ingresso WHERE id_participante = p_id;
+
+    -- Por último, excluindo o participante
     DELETE FROM Participante WHERE id_participante = p_id;
+
     DBMS_OUTPUT.PUT_LINE('Participante removido com sucesso.');
 END;
 /
+
