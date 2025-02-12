@@ -449,6 +449,53 @@ END;
 
 
 
+-- Criar uma estrutura RECORD e TABLE para armazenar dados temporários (Participante)
+-- PL: USO DE RECORD, USO DE ESTRUTURA DE DADOS DO TIPO TABLE
+DECLARE
+    -- Definição de um RECORD com mais informações úteis
+    TYPE ParticipanteRecord IS RECORD (
+        id Participante.id_participante%TYPE,
+        nome Nomes_Participantes.nome%TYPE,
+        tipo VARCHAR2(20)
+    );
+
+    -- Definição de uma TABLE para armazenar múltiplos registros
+    TYPE ParticipanteTable IS TABLE OF ParticipanteRecord INDEX BY PLS_INTEGER;
+    v_participantes ParticipanteTable;
+
+    -- Cursor para buscar os participantes e seus tipos
+    CURSOR c_participantes IS
+        SELECT p.id_participante, np.nome, 
+               CASE 
+                   WHEN e.id_participante IS NOT NULL THEN 'Externo'
+                   WHEN pr.id_participante IS NOT NULL THEN 'Professor'
+                   WHEN a.id_participante IS NOT NULL THEN 'Aluno'
+                   ELSE 'Desconhecido'
+               END AS tipo
+        FROM Participante p
+        JOIN Nomes_Participantes np ON p.id_participante = np.id_participante
+        LEFT JOIN Externo e ON p.id_participante = e.id_participante
+        LEFT JOIN Professor pr ON p.id_participante = pr.id_participante
+        LEFT JOIN Aluno a ON p.id_participante = a.id_participante;
+
+BEGIN
+    -- Buscar dados para a estrutura TABLE
+    FOR rec IN c_participantes LOOP
+        v_participantes(v_participantes.COUNT + 1) := rec;
+    END LOOP;
+
+    -- Exibir os dados armazenados na estrutura TABLE
+    FOR i IN 1 .. v_participantes.COUNT LOOP
+        DBMS_OUTPUT.PUT_LINE('ID: ' || v_participantes(i).id ||
+                             ' | Nome: ' || v_participantes(i).nome ||
+                             ' | Tipo: ' || v_participantes(i).tipo);
+    END LOOP;
+END;
+/
+
+
+
+
 -- Conceder permissões para um usuário Organizador
 -- SQL: GRANT / REVOKE
 GRANT SELECT, INSERT, UPDATE, DELETE ON Certificado TO Organizador;
