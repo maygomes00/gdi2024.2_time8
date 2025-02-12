@@ -379,3 +379,22 @@ BEGIN
 END;
 /
 
+
+
+-- Criar um loop para listar os eventos futuros
+-- PL: WHILE LOOP, FOR IN LOOP, %ROWTYPE
+DECLARE
+    CURSOR cur_eventos IS SELECT * FROM Evento WHERE data_inicio > SYSDATE;
+    v_evento cur_eventos%ROWTYPE;
+BEGIN
+    OPEN cur_eventos;
+    WHILE TRUE LOOP
+        FETCH cur_eventos INTO v_evento;
+        EXIT WHEN cur_eventos%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(v_evento.nome || ' - ' || v_evento.data_inicio);
+    END LOOP;
+    CLOSE cur_eventos;
+END;
+/
+
+
