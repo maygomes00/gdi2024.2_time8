@@ -240,7 +240,20 @@ WHERE id_evento IN (SELECT id_evento FROM Evento WHERE data_fim < SYSDATE);
 
 
 
--- Consultar quais eventos já estão com a capacidade máxima (BETWEEN)
+-- Consultar quais eventos já estão com a capacidade máxima 
+-- SQL: BETWEEN
+SELECT 
+    e.id_evento, 
+    e.nome, 
+    e.capacidade_maxima, 
+    NVL(COUNT(i.id_ingresso), 0) AS ingressos_vendidos,
+    ROUND((COUNT(i.id_ingresso) / e.capacidade_maxima) * 100, 2) AS percentual_ocupacao
+FROM Evento e
+LEFT JOIN Ingresso i ON e.id_evento = i.evento
+GROUP BY e.id_evento, e.nome, e.capacidade_maxima
+HAVING ROUND((COUNT(i.id_ingresso) / e.capacidade_maxima) * 100, 2) 
+        BETWEEN 50 AND 100
+ORDER BY percentual_ocupacao DESC;
 
 
 
