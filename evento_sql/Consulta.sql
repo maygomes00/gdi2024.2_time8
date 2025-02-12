@@ -357,3 +357,25 @@ BEGIN
 END;
 /
 
+
+
+-- Criar um cursor para listar os participantes de um evento específico (id_evento = 1; Tech Summit)
+-- PL: CURSOR (OPEN, FETCH, CLOSE), LOOP EXIT WHEN
+DECLARE
+    CURSOR cur_participantes IS
+        SELECT p.nome, p.email FROM Participante p
+        JOIN Ingresso i ON p.id_participante = i.id_participante
+        WHERE i.id_evento = 1;
+    v_nome Participante.email%TYPE;
+    v_email Participante.email%TYPE;
+BEGIN
+    OPEN cur_participantes;
+    LOOP
+        FETCH cur_participantes INTO v_nome, v_email;
+        EXIT WHEN cur_participantes%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(v_nome || ' - ' || v_email);
+    END LOOP;
+    CLOSE cur_participantes;
+END;
+/
+
