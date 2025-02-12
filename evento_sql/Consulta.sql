@@ -250,6 +250,21 @@ BEGIN
 END;
 /
 
+-- Trigger para evitar que fornecedores sejam excluídos se tiverem com com contratos ativos
+-- PL: CREATE OR REPLACE TRIGGER (COMANDO)
+CREATE OR REPLACE TRIGGER trg_prevent_delete_fornecedor
+BEFORE DELETE ON Fornecedor
+FOR EACH ROW
+DECLARE
+    v_count NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_count FROM Contrato WHERE contratado = :OLD.id_fornecedor;
+    IF v_count > 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Não é permitido remover fornecedores com contratos ativos.');
+    END IF;
+END;
+/
+
 
 
 -- Preço médio dos ingressos por evento ordenados do maior para o menor
