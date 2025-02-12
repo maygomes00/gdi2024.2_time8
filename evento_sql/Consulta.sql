@@ -223,8 +223,14 @@ ALTER TABLE Contrato ADD data_termino DATE;
 
 
 
--- Update em contrato para colocar valor no novo campo de data_termino
-
+-- Criar um bloco anônimo para atualizar status de eventos passados
+-- SQL/PL: BLOCO ANÔNIMO, UPDATE
+BEGIN
+    UPDATE Evento
+    SET categoria = 'Finalizado'
+    WHERE data_fim < SYSDATE;
+END;
+/
 
 -- Atualizar status de ingresso para "usado" quando o evento já ocorreu
 -- SQL: UPDATE, SUBCONSULTA COM IN
@@ -249,6 +255,8 @@ BEGIN
     END IF;
 END;
 /
+
+
 
 -- Trigger para evitar que fornecedores sejam excluídos se tiverem com com contratos ativos
 -- PL: CREATE OR REPLACE TRIGGER (COMANDO)
@@ -396,6 +404,33 @@ END;
 
 
 
+-- Criar um package para gestão de contratos
+-- PL: CREATE OR REPLACE PACKAGE, CREATE OR REPLACE PACKAGE BODY
+CREATE OR REPLACE PACKAGE Contrato_Pkg AS
+    PROCEDURE finalizar_contrato(p_id Contrato.org_responsavel%TYPE);
+END Contrato_Pkg;
+/
+    
+CREATE OR REPLACE PACKAGE BODY Contrato_Pkg AS
+    PROCEDURE finalizar_contrato(p_id Contrato.org_responsavel%TYPE) IS
+    BEGIN
+        -- Atualizando o status do contrato
+        UPDATE Contrato 
+        SET contrato_status = 'Finalizado' 
+        WHERE org_responsavel = p_id;
+
+        -- Mensagem de confirmação
+        DBMS_OUTPUT.PUT_LINE('Contrato finalizado com sucesso.');
+
+        -- Garantir que a alteração seja persistida
+        COMMIT;
+    END finalizar_contrato;
+END Contrato_Pkg;
+/
+
+
+
+
 -- Criar um loop para listar os eventos futuros
 -- PL: WHILE LOOP, FOR IN LOOP, %ROWTYPE
 DECLARE
@@ -411,5 +446,6 @@ BEGIN
     CLOSE cur_eventos;
 END;
 /
+
 
 
