@@ -91,7 +91,7 @@ CREATE OR REPLACE TYPE BODY tp_evento AS
         SELF.CEP := cep;
         SELF.capacidade_maxima := capacidade;
         SELF.organizador := organizador;
-    END;
+    END; 
     MEMBER FUNCTION getDuracao RETURN NUMBER IS
     BEGIN
         RETURN data_fim - data_inicio;
@@ -166,7 +166,7 @@ CREATE OR REPLACE TYPE tp_telefone_participante AS OBJECT(
 CREATE TABLE Telefone_Participante OF tp_telefone_participante(
     PRIMARY KEY (participante, telefone),
     CONSTRAINT fk_telefone_participante FOREIGN KEY (participante)
-        REFERENCES Participante(is_participante)
+        REFERENCES Participante(id_participante)
 );
 
 
@@ -224,7 +224,7 @@ CREATE OR REPLACE TYPE tp_externo UNDER tp_participante(
 -- CREATE TABLE (SUBTYPE):
 CREATE TABLE Externo OF tp_externo(
     PRIMARY KEY (id_participante),
-    CONSTRAINT fk_externo_participante FOREIGN KEY (is_participante)
+    CONSTRAINT fk_externo_participante FOREIGN KEY (id_participante)
         REFERENCES Participante (id_participante),
     
     -- Defirni os atributos obrigatórios
@@ -344,7 +344,6 @@ CREATE TABLE Participa (
     CONSTRAINT fk_participa_ingresso FOREIGN KEY (evento, participante) 
         REFERENCES Ingresso(id_evento, id_participante)
 );
-----------------------
 
 
 -- FORNECEDOR
