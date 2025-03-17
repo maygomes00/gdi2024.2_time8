@@ -19,9 +19,8 @@ DROP TABLE IF EXISTS Fornecedor CASCADE CONSTRAINTS;
 DROP TABLE IF EXISTS Contrato;
 DROP TABLE IF EXISTS Certificado;
 
-
+-- ORGANIZADOR
 -- CREATE TYPE:
--- Tipo Organizador
 CREATE OR REPLACE TYPE tp_organizador AS OBJECT(
     id_organizador NUMBER,
     nome_completo VARCHAR2(100),
@@ -32,7 +31,6 @@ CREATE OR REPLACE TYPE tp_organizador AS OBJECT(
 );
 
 -- CREATE TABLE:
--- Tabela Organizador
 CREATE OR REPLACE TABLE Organizador OF tp_organizador (
     CONSTRAINT PRIMARY KEY (id_organizador),
     CONSTRAINT fk_supervisor FOREIGN KEY (supervisor)
@@ -44,8 +42,9 @@ CREATE OR REPLACE TABLE Organizador OF tp_organizador (
     departamento NOT NULL
 );
 
+
+-- ENDEREÇO
 -- CREATE TYPE:
--- Tipo Endereco
 CREATE OR REPLACE TYPE tp_endereco AS OBJECT(
     CEP VARCHAR2(10),
     Rua VARCHAR2(50),
@@ -55,7 +54,6 @@ CREATE OR REPLACE TYPE tp_endereco AS OBJECT(
     Cidade VARCHAR2(50)
 );
 -- CREATE TABLE:
--- Tabela Endereco
 CREATE OR REPLACE TABLE Endereco of tp_endereco(
     CEP PRIMARY KEY,
 
@@ -67,8 +65,9 @@ CREATE OR REPLACE TABLE Endereco of tp_endereco(
     Cidade NOT NULL
 );
 
+
+-- EVENTO
 -- CREATE TYPE:
--- Tipo Evento
 CREATE OR REPLACE TYPE tp_evento AS OBJECT(
     id_evento NUMBER,
     nome VARCHAR2(100),
@@ -80,7 +79,6 @@ CREATE OR REPLACE TYPE tp_evento AS OBJECT(
     organizador REF tp_organizador
 );
 -- CREATE TABLE
--- Tabela Evento
 CREATE OR REPLACE TABLE Evento OF tp_evento (
     CONSTRAINT PRIMARY KEY(id_evento),
     CONSTRAINT fk_evento_endereco FOREIGN KEY (CEP)
@@ -101,21 +99,22 @@ CREATE OR REPLACE TABLE Evento OF tp_evento (
     organizador NOT NULL
 );
 
+
+-- NOME_PARTICIPANTE
 -- CREATE TYPE:
--- Tipo Nome_Participante
 CREATE OR REPLACE TYPE tp_nome_participante AS OBJECT (
     cpf VARCHAR2(11),
     nome VARCHAR2(50),
     sobrenome VARCHAR2(50)
 )
 -- CREATE TABLE:
--- Tabelas Nome_Participante
 CREATE OR REPLACE TABLE Nomes_Participantes OF tp_nome_participante(
     CONSTRAINT PRIMARY KEY(cpf)
 );
 
+
+-- PARTICIPANTE
 -- CREATE TYPE:
--- Tipo Participante
 CREATE OR REPLACE TYPE tp_participante AS OBJECT(
     id_participante NUMBER,
     cpf VARCHAR2(11),
@@ -123,7 +122,6 @@ CREATE OR REPLACE TYPE tp_participante AS OBJECT(
     nomes REF tp_nome_participante
 ) NOT FINAL;
 -- CREATE TABLE:
--- Tabela Participante
 CREATE OR REPLACE TABLE Participante OF tp_participante (
     CONSTRAINT PRIMARY KEY(id_participante),
     CONSTRAINT fk_nomes_participante FOREIGN KEY (cpf)
@@ -134,42 +132,42 @@ CREATE OR REPLACE TABLE Participante OF tp_participante (
     email NOT NULL 
 );
 
+
+-- TELEFONE_PARTICIPANTE
 -- CREATE TYPE:
--- Tipo Telefone_Participante
 CREATE OR REPLACE TYPE tp_telefone_participante AS OBJECT(
     participante NUMBER,
     telefone VARCHAR2(15),
     telefone_participante REF tp_participante
 );
 -- CREATE TABLE:
--- Tabela Telefone_Participante
 CREATE OR REPLACE TABLE Telefone_Participante OF tp_telefone_participante(
     CONSTRAINT PRIMATY KEY (participante, telefone),
     CONSTRAINT fk_telefone_participante FOREIGN KEY (participante)
         REFERENCES Participante(is_participante)
 );
 
+
+-- PALESTRANTE
 -- CREATE SUBTYPE:
--- Subtipo Palestrate (Participante)
 CREATE OR REPLACE TYPE tp_palestrante UNDER tp_palestrante(
     biografia VARCHAR2(500),
     perfil_linkedin VARCHAR2(200)
 );
 -- CREATE TABLE (SUBTYPE):
--- Tabela Palestrante (Participante)
 CREATE OR REPLACE TABLE Palestrante OF tp_palestrante(
     CONSTRAINT PRIMARY KEY (id_participante),
     CONSTRAINT fk_palestrante_participante PRIMARY KEY (id_participante)
         REFERENCES Participante (id_participante)
 );
 
+
+-- ALUNO
 -- CREATE SUBTYPE:
--- Subtipo Aluno (Participante)
 CREATE OR REPLACE TYPE tp_aluno UNDER tp_participante (
     matricula VARCHAR2(20)
 );
 -- CREATE TABLE (SUBTYPE):
--- Tabela Aluno (Participante)
 CREATE OR REPLACE TABLE Aluno OF tp_aluno(
     CONSTRAINT PRIMARY KEY (id_participante),
     CONSTRAINT fk_aluno_participante FOREIGN KEY (id_participante)
@@ -179,13 +177,13 @@ CREATE OR REPLACE TABLE Aluno OF tp_aluno(
     matricula UNIQUE NOT NULL
 );
 
+
+-- PROFESSOR
 -- CREATE SUBTYPE:
--- Subtipo Professor (Participante)
 CREATE OR REPLACE TYPE tp_professor UNDER tp_participante (
     id_professor VARCHAR2(20)
 );
 -- CREATE TABLE (SUBTYPE):
--- Tabela Professor (Participante)
 CREATE OR REPLACE TABLE Professor OF tp_professor(
     CONSTRAINT PRIMARY KEY (id_participante),
     CONSTRAINT fk_professor_participante FOREIGN KEY (id_participante)
@@ -195,13 +193,13 @@ CREATE OR REPLACE TABLE Professor OF tp_professor(
     id_professor UNIQUE NOT NULL
 );
 
+
+-- EXTERNO
 -- CREATE TYPE (SUBTYPE):
--- Subtipo Externo (Participante)
 CREATE OR REPLACE TYPE tp_externo UNDER tp_participante(
     intituicao VARCHAR2(100)
 );
 -- CREATE TABLE (SUBTYPE):
--- Tabela Externo (Participante)
 CREATE OR REPLACE TABLE Externo OF tp_externo(
     CONSTRAINT PRIMARY KEY (id_participante),
     CONSTRAINT fk_externo_participante FOREIGN KEY (is_participante)
@@ -212,29 +210,45 @@ CREATE OR REPLACE TABLE Externo OF tp_externo(
 );
 
 
+-- INGRESSO
+-- CREATE TYPE:
+CREATE OR REPLACE TYPE tp_ingresso AS OBJECT(
+    id_evento REF tp_evento,
+    id participante REF tp_participante,
+    tipo VARCHAR2(50),
+    ingresso_status VARCHAR2(50),
+    data_emissao DATE,
+);
+-- CREATE TABLE:
+CREATE OR REPLACE TABLE Ingresso OF tp_ingresso(
+    CONSTRAINT PRIMARY KEY (id_evento, id_participante),
+    CONSTRAINT fk_ingresso_evento FOREIGN KEY (if_evento)
+        REFERENCES Evento (id_evento),
+    CONSTRAINT fk_ingresso_participante FOREIGN KEY (id_participante)
+        REFERENCES Participante(id_participante),
+    CONSTRAINT fk_ingresso_preco_ingressos FOREIGN KEY (id_evento, tipo)
+        REFERENCES Preco_Ingresso()
+)
+
+
+-- PRECO_INGRESSOS
+-- CREATE TYPE:
+CREATE OR REPLACE TYPE tp_preco_ingresso AS OBJECT(
+    evento REF tp_evento,
+    tipo VARCHER2(50),
+    preco NUMBER
+);
+-- CREATE TABLE:
+CREATE OR REPLACE TABLE Preco_Ingressos OF tp_preco_ingresso(
+    CONSTRAINT PRIMARY KEY(evento, tipo),
+    CONSTRAINT fk_preco_ingresso_evento FOREIGN KEY (evento)
+        REFERENCES Evento(id_evento),
+    CONSTRAINT ck_preco_ingresso_tipo CHECK (tipo IN ('Estudante', 'Geral', 'VIP'))
+);
+
 
 ----------------------
--- Tabelas ingresso
-CREATE TABLE Preco_Ingressos (
-    evento NUMBER,
-    tipo VARCHAR(50),
-    preco NUMBER,
-    PRIMARY KEY (evento, tipo),
-    CONSTRAINT fk_preco_ingresso_evento FOREIGN KEY (evento) REFERENCES Evento(id_evento),
-    CONSTRAINT ck_presso_ingresso_tipo CHECK (tipo IN ('estudante', 'geral', 'VIP'))
-);
 
-CREATE TABLE Ingresso (
-    id_evento NUMBER,
-    id_participante NUMBER,
-    tipo VARCHAR(50),
-    ingresso_status VARCHAR(50),
-    data_emissao DATE NOT NULL,
-    PRIMARY KEY (id_evento, id_participante),
-    CONSTRAINT fk_ingresso_participante FOREIGN KEY (id_participante) REFERENCES Participante(id_participante),
-    CONSTRAINT fk_ingresso_preco_ingressos FOREIGN KEY (id_evento, tipo) REFERENCES Preco_Ingressos(evento, tipo),
-    CONSTRAINT ck_ingresso_status CHECK (ingresso_status IN ('ativo', 'cancelado', 'usado'))
-);
 
 
 -- Tabelas Sessão
