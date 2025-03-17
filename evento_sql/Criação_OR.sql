@@ -263,6 +263,26 @@ CREATE TABLE Preco_Ingressos OF tp_preco_ingresso(
         REFERENCES Evento(id_evento),
     CONSTRAINT ck_preco_ingresso_tipo CHECK (tipo IN ('Estudante', 'Geral', 'VIP'))
 );
+-- Trigger que adiciona objetos de preço de ingresso toda vez que um novo evento é adicionado em tb_evento. 
+CREATE OR REPLACE TRIGGER trg_preco_ingresso 
+AFTER INSERT ON tb_evento
+FOR EACH ROW
+DECLARE
+    e tp_preco_ingresso;
+    v tp_preco_ingresso;
+    g tp_preco_ingresso;
+BEGIN
+    -- Define 3 objetos para os tipos de ingresso que um evento pode ter, com um valor padrão inicial.
+    e := tp_preco_ingresso (:NEW.id_evento, 'estudante', 0.00);
+    g := tp_preco_ingresso (:NEW.id_evento, 'geral', 0.00);
+    v := tp_preco_ingresso (:NEW.id_evento, 'VIP', 0.00);
+
+    -- Insere o preço dos ingressos do novo evento inserido na tabela tb_preco_ingresso.
+    INSERT INTO tb_preco_ingresso VALUES (e);
+    INSERT INTO tb_preco_ingresso VALUES (g);
+    INSERT INTO tb_preco_ingresso VALUES (v);
+END;
+/
 
 
 -- INGRESSO
