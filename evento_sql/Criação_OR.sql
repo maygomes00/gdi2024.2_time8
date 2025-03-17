@@ -319,26 +319,31 @@ CREATE OR REPLACE TABLE Sessao OF tp_evento (
 
 -- MINISTRAR
 -- CREATE TABLE
-----------------------
-
-
-
 CREATE TABLE Ministrar (
-    palestrante NUMBER,
-    sessao NUMBER,
-    PRIMARY KEY (palestrante, sessao),
-    CONSTRAINT fk_ministrar_palestrante FOREIGN KEY (palestrante) REFERENCES Palestrante(id_participante),
-    CONSTRAINT fk_ministrar_sessao FOREIGN KEY (sessao) REFERENCES Sessao(id_sessao)
+    palestrante REF tp_palestrante,
+    sessao REF tp_sessao,
+    CONSTRAINT PRIMARY KEY (palestrante, sessao),
+    CONSTRAINT fk_ministrar_palestrante FOREIGN KEY (palestrante)
+        REFERENCES Palestrante (id_palestrante),
+    CONSTRAINT fk_ministrar_sessao FOREIGN KEY (sessao)
+        REFERENCES Sessao (id_sessao)
 );
 
+-- PARTICIPA
+-- CREATE TABLE
 CREATE TABLE Participa (
-    participante NUMBER,
-    sessao NUMBER PRIMARY KEY,
-    evento NUMBER,
-    CONSTRAINT fk_participa_participante FOREIGN KEY (participante) REFERENCES Participante(id_participante),
-    CONSTRAINT fk_participa_sessao FOREIGN KEY (sessao) REFERENCES Sessao(id_sessao),
-    CONSTRAINT fk_participa_ingresso FOREIGN KEY (evento, participante) REFERENCES Ingresso(id_evento, id_participante)
-);
+    participante REF tp_participante,
+    sessao REF tp_sessao,
+    evento REF tp_evento,
+    CONSTRAINT PRIMARY KEY (sessao)
+    CONSTRAINT fk_participa_participante FOREIGN KEY (participante) 
+        REFERENCES Participante(id_participante),
+    CONSTRAINT fk_participa_sessao FOREIGN KEY (sessao) 
+        REFERENCES Sessao(id_sessao),
+    CONSTRAINT fk_participa_ingresso FOREIGN KEY (evento, participante) 
+        REFERENCES Ingresso(id_evento, id_participante)
+)
+----------------------
 
 
 -- Tabela Fornecedor
