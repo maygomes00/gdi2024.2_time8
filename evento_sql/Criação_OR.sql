@@ -329,6 +329,7 @@ CREATE TABLE Ministrar (
         REFERENCES Sessao (id_sessao)
 );
 
+
 -- PARTICIPA
 -- CREATE TABLE
 CREATE TABLE Participa (
@@ -342,50 +343,73 @@ CREATE TABLE Participa (
         REFERENCES Sessao(id_sessao),
     CONSTRAINT fk_participa_ingresso FOREIGN KEY (evento, participante) 
         REFERENCES Ingresso(id_evento, id_participante)
-)
+);
 ----------------------
 
 
--- Tabela Fornecedor
-CREATE TABLE Fornecedor (
-    id_fornecedor NUMBER PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    tipo_servico VARCHAR(50) NOT NULL,
-    telefone VARCHAR(15),
-    email VARCHAR(100)
+-- FORNECEDOR
+-- CREATE TYPE:
+CREATE OR REPLACE TYPE tp_fornecedor AS OBJECT (
+    id_fornecedor NUMBER,
+    nome VARCHAR2(100),
+    tipo_servico VARCHAR2(50),
+    telefone VARCHAR2(15),
+    email VARCHAR2(100)
+);
+-- CREATE TABLE
+CREATE TABLE Fornecedor OF tp_fornecedor (
+    CONSTRAINT PRIMATY KEY (id_fornecedor)
 );
 
 
--- Tabela Contrato
-CREATE TABLE Contrato (
-    org_responsavel NUMBER,
-    evento NUMBER,
-    contratado NUMBER,
-    data_contrato DATE NOT NULL,
-    descricao_servico VARCHAR(500) NOT NULL,
+-- CONTRATO
+-- CREATE TYPE:
+CREATE OR REPLACE TYPE tp_contrato AS OBJECT (
+    org_responsavel REF tp_organizador,
+    evento REF tp_evento,
+    contrato NUMBER,
+    data_contrato DATE,
+    descricao_servico VARCHAR2(500),
     valor NUMBER,
-    data_assinatura DATE NOT NULL,
-    contrato_status VARCHAR(20),
-    PRIMARY KEY (org_responsavel, evento, contratado),
-    CONSTRAINT fk_contrato_organizador FOREIGN KEY (org_responsavel) REFERENCES Organizador(id_organizador),
-    CONSTRAINT fk_contrato_evento FOREIGN KEY (evento) REFERENCES Evento(id_evento),
-    CONSTRAINT fk_contrato_fornecedor FOREIGN KEY (contratado) REFERENCES Fornecedor(id_fornecedor),
-    CONSTRAINT ck_contrato_valor CHECK (valor > 0),
-    CONSTRAINT ck_contrato_datas CHECK (data_assinatura >= data_contrato),
-    CONSTRAINT ck_contrato_status CHECK (contrato_status IN ('Ativo', 'Finalizado', 'Cancelado'))
+    data_assinatura DATE,
+    contrato_status VARCHAR2(20)
+);
+-- CREATE TABLE
+CREATE OR REPLACE TABLE Contrato OF tp_contrato (
+    CONSTRAINT PRIMARY KEY (org_responsavel, evento, contrato),
+    CONSTRAINT fk_contrato_organizador FOREIGN KEY (org_responsavel)
+        REFERENCES Organizador(id_organizador),
+    CONSTRAINT fk_contrato_evento FOREIGN KEY (evento)
+        REFERENCES Evento(id_evento),
+    CONSTRAINT fk_contrato_fornecedor FOREIGN KEY (contratado)
+        REFERENCES Fornecedor (id_fornecedor),
+    
+    -- Restrições de integralidade
+    CONSTRAINT ck_valor CHECK (valor > 0),
+    CONSTRAINT ck_datas CHECK (data_assinatura >= data_contrato),
+    CONSTRAINT ck_status_contrato CHECK (contrato_status IN ('Ativo', 'Finalizado', 'Cancelado'))
 );
 
 
--- Tabela Certificado
-CREATE TABLE Certificado (
-    numero_certificado NUMBER PRIMARY KEY,
-    data_emissao DATE NOT NULL,
+-- CERTIFICADO
+-- CREATE TYPE
+CREATE OR REPLACE TYPE tp_certificado AS OBJECT (
+    numero_certificado NUMBER,
+    data_emissao DATE,
     carga_horaria NUMBER,
-    certificado_status VARCHAR(20),
-    id_evento NUMBER,
-    id_participante NUMBER,
-    CONSTRAINT fk_certificado_evento FOREIGN KEY (id_evento) REFERENCES Evento(id_evento),
-    CONSTRAINT fk_certificado_participante FOREIGN KEY (id_participante) REFERENCES Participante(id_participante),
+    certificado_status VARCHAR2 (20),
+    id_evento REF tp_evento,
+    id_participante REF tp_participante
+);
+-- CREATE TABLE
+CREATE OR REPLACE TABLE Certificado OF tp_certificado (
+    CONSTRAINT PRIMARY KEY (numero_certificado),
+    CONSTRAINT fk_certificado_evento FOREIGN KEY (id_evento)
+        REFERENCES Evento(id_evento),
+    CONSTRAINT fk_certificado_participante FOREIGN KEY (id_participante)
+        REFERENCES Participante (id_participante),
+
+    -- Restriçõs de integralidade
     CONSTRAINT ck_certificado_carga_horaria CHECK (carga_horaria > 0),
     CONSTRAINT ck_certificado_status CHECK (certificado_status IN ('Emitido', 'Pendente', 'Cancelado'))
 );
