@@ -76,8 +76,25 @@ CREATE OR REPLACE TYPE tp_evento AS OBJECT(
     data_fim DATE,
     CEP REF tp_endereco,
     capacidade_maxima NUMBER,
-    organizador REF tp_organizador
+    organizador REF tp_organizador,
+    CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR, categoria VARCHAR, inicio DATE, fim DATE, cep VARCHAR, capacidade NUMBER, organizador NUMBER) RETURN SELF AS RESULT
 );
+-- CREATE TYPE BODY
+/
+CREATE OR REPLACE TYPE BODY tp_evento AS
+    CONSTRUCTOR FUNCTION id NUMBER, nome VARCHAR, categoria VARCHAR, inicio DATE, fim DATE, cep VARCHAR, capacidade NUMBER, organizador NUMBER) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.id_evento := id;
+        SELF.nome := nome;
+        SELF.categoria := categoria;
+        SELF.data_inicio := inicio;
+        SELF.data_fim := fim;
+        SELF.CEP := cep;
+        SELF.capacidade_maxima := capacidade;
+        SELF.organizador := organizador;
+    END;
+END;
+/
 -- CREATE TABLE
 CREATE OR REPLACE TABLE Evento OF tp_evento (
     CONSTRAINT PRIMARY KEY(id_evento),
