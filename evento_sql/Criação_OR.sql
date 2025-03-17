@@ -93,8 +93,14 @@ CREATE OR REPLACE TYPE BODY tp_evento AS
         SELF.capacidade_maxima := capacidade;
         SELF.organizador := organizador;
     END;
+    MEMBER FUNCTION getDuracao RETURN NUMBER IS
+    BEGIN
+        RETURN data_fim - data_inicio;
+    END;
 END;
 /
+-- ALTER TYPE
+ALTER TYPE tp_evento ADD MEMBER FUNCTION getDuracao RETURN NUMBER;
 -- CREATE TABLE
 CREATE OR REPLACE TABLE Evento OF tp_evento (
     CONSTRAINT PRIMARY KEY(id_evento),
