@@ -252,9 +252,25 @@ CREATE OR REPLACE TABLE Ingresso OF tp_ingresso(
 -- CREATE TYPE:
 CREATE OR REPLACE TYPE tp_preco_ingresso AS OBJECT(
     evento REF tp_evento,
-    tipo VARCHER2(50),
-    preco NUMBER
+    tipo VARCHAR2(50),
+    preco NUMBER,
+    CONSTRUCTOR FUNCTION tp_preco_ingresso (evento REF tp_evento, tipo VARCHAR, preco NUMBER) RETURN SELF AS RESULT,
+    MEMBER PROCEDURE setPreco (valor NUMBER)
 );
+-- CREATE TYPE BODY
+/
+CREATE OR REPLACE TYPE BODY tp_preco_ingresso AS
+    CONSTRUCTOR FUNCTION tp_preco_ingresso (evento REF tp_evento, tipo VARCHAR, preco NUMBER) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.evento := evento;
+        SELF.tipo := tipo;
+        SELF.preco := preco;
+    END;
+    MEMBER PROCEDURE setPreco (valor NUMBER) IS 
+        SELF.preco := preco;
+    END;
+END;
+/
 -- CREATE TABLE:
 CREATE OR REPLACE TABLE Preco_Ingressos OF tp_preco_ingresso(
     CONSTRAINT PRIMARY KEY(evento, tipo),
