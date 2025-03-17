@@ -26,13 +26,12 @@ CREATE OR REPLACE TYPE tp_organizador AS OBJECT(
     nome_completo VARCHAR2(100),
     cargo VARCHAR2(50),
     departamento VARCHAR2(50),
-    supervisor NUMBER,
     supervisor REF tp_organizador
 );
 
 -- CREATE TABLE:
 CREATE TABLE Organizador OF tp_organizador (
-    CONSTRAINT PRIMARY KEY (id_organizador),
+    PRIMARY KEY (id_organizador),
     CONSTRAINT fk_supervisor FOREIGN KEY (supervisor)
         REFERENCES Organizador(id_organizador) ON DELETE SET NULL,
     
