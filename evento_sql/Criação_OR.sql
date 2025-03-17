@@ -286,26 +286,42 @@ CREATE OR REPLACE TABLE Preco_Ingressos OF tp_preco_ingresso(
 );
 
 
+-- SESSAO
+-- CREATE TYPE
+CREATE OR REPLACE TYPE tp_sessao AS OBJECT(
+    id_sessao NUMBER,
+    titulo VARCHAR2(100),
+    descricao VARCHAR2(500),
+    tipo VARCHAR2(50),
+    duracao NUMBER,
+    capacidade NUMBER,
+    data_inicio_sessao DATE,
+    data_fim_sessao DATE,
+    evento REF tp_evento
+);
+-- CREATE TABLE
+CREATE OR REPLACE TABLE Sessao OF tp_evento (
+    CONSTRAINT PRIMARY KEY (id_sessao),
+    CONSTRAINT fk_sessao_evento FOREIGN KEY (id_evento)
+        REFERENCES Evento(id_evento),
+    CONSTRAINT ck_sessao_duracao CHECK (duracao > 0),
+    CONSTRAINT ck_sessao_cpacidade CHECK (capacidade > 0),
+    CONSTRAINT ck_sessao_datas CHECK (data_fim_sessao >= data_inicio_sessao),
+
+    -- Definir os atributos obrigatórios
+    titulo NOT NULL,
+    descricao NOT NULL,
+    evento NOT NULL,
+    data_inicio_sessao NOT NULL,
+    data_fim_sessao NOT NULL
+);
+
+
+-- MINISTRAR
+-- CREATE TABLE
 ----------------------
 
 
-
--- Tabelas Sessão
-CREATE TABLE Sessao (
-    id_sessao NUMBER PRIMARY KEY,
-    titulo VARCHAR(100) NOT NULL,
-    descricao VARCHAR(500) NOT NULL,
-    tipo VARCHAR(50),
-    duracao NUMBER,
-    capacidade NUMBER,
-    evento NUMBER NOT NULL,
-    data_inicio_sessao DATE NOT NULL,
-    data_fim_sessao DATE NOT NULL,
-    CONSTRAINT fk_sessao_evento FOREIGN KEY (evento) REFERENCES Evento(id_evento),
-    CONSTRAINT ck_sessao_duracao CHECK (duracao > 0),
-    CONSTRAINT ck_sessao_capacidade CHECK (capacidade > 0),
-    CONSTRAINT ck_sessao_datas CHECK (data_fim_sessao >= data_inicio_sessao)
-);
 
 CREATE TABLE Ministrar (
     palestrante NUMBER,
