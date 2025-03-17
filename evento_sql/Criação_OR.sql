@@ -170,7 +170,7 @@ CREATE OR REPLACE TABLE Palestrante OF tp_palestrante(
 
 
 
-
+--------------------------------------------------
 
 CREATE TABLE Aluno (
     id_participante NUMBER PRIMARY KEY,
