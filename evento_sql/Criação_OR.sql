@@ -1,4 +1,4 @@
--- DROP REVISAR ESSA PARTE:
+-- DROP TABLES:
 -- Apaga tabelas existentes (para criar elas do zero)
 DROP TABLE IF EXISTS Evento CASCADE CONSTRAINTS;
 DROP TABLE IF EXISTS Endereco CASCADE CONSTRAINTS;
@@ -18,6 +18,26 @@ DROP TABLE IF EXISTS Participa;
 DROP TABLE IF EXISTS Fornecedor CASCADE CONSTRAINTS;
 DROP TABLE IF EXISTS Contrato;
 DROP TABLE IF EXISTS Certificado;
+
+-- DROP TYPES:
+-- Apaga tipo existentes (para criar eles do zero)
+DROP TYPE tp_evento FORCE;
+DROP TYPE tp_endereco FORCE;
+DROP TYPE tp_participante FORCE;
+DROP TYPE tp_nome_participante FORCE;
+DROP TYPE tp_telefone_participante FORCE;
+DROP TYPE v_telefone_participante FORCE;
+DROP TYPE tp_palestrante FORCE;
+DROP TYPE tp_aluno FORCE;
+DROP TYPE tp_professor FORCE;
+DROP TYPE tp_externo FORCE;
+DROP TYPE tp_organizador FORCE;
+DROP TYPE tp_preco_ingresso FORCE;
+DROP TYPE tp_ingresso FORCE;
+DROP TYPE tp_sessao FORCE;
+DROP TYPE tp_fornecedor FORCE;
+
+
 
 -- ORGANIZADOR
 -- CREATE TYPE:
