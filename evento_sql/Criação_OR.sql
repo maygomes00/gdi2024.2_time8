@@ -563,11 +563,9 @@ CREATE OR REPLACE TYPE tp_certificado AS OBJECT (
 );
 -- CREATE TABLE
 CREATE TABLE Certificado OF tp_certificado (
-    PRIMARY KEY (numero_certificado),
-    CONSTRAINT fk_certificado_evento FOREIGN KEY (id_evento)
-        REFERENCES Evento(id_evento),
-    CONSTRAINT fk_certificado_participante FOREIGN KEY (id_participante)
-        REFERENCES Participante (id_participante),
+    numero_certificado PRIMARY KEY,
+    id_evento WITH ROWID REFERENCES Evento,
+    id_participante WITH ROWID REFERENCES Participante,
 
     -- Restriçõs de integralidade
     CONSTRAINT ck_certificado_carga_horaria CHECK (carga_horaria > 0),
