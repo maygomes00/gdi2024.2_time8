@@ -204,7 +204,7 @@ CREATE TABLE Participante OF tp_participante (
 
 -- PALESTRANTE
 -- CREATE SUBTYPE:
-CREATE OR REPLACE TYPE tp_palestrante UNDER tp_palestrante(
+CREATE OR REPLACE TYPE tp_palestrante UNDER tp_participante(
     biografia VARCHAR2(500),
     perfil_linkedin VARCHAR2(200),
 
@@ -230,9 +230,7 @@ END;
 /
 -- CREATE TABLE (SUBTYPE):
 CREATE TABLE Palestrante OF tp_palestrante(
-    PRIMARY KEY (id_participante),
-    CONSTRAINT fk_palestrante_participante FOREIGN KEY (id_participante)
-        REFERENCES Participante (id_participante)
+    id_participante PRIMARY KEY
 );
 
 
