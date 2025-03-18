@@ -77,7 +77,7 @@ CREATE OR REPLACE TYPE tp_evento AS OBJECT(
     capacidade_maxima NUMBER,
     organizador REF tp_organizador,
     CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR2, categoria VARCHAR2, inicio DATE, fim DATE, cep VARCHAR2, capacidade NUMBER, organizador REF tp_organizador) RETURN SELF AS RESULT
-);
+) NOT INSTANTIABLE;
 -- CREATE TYPE BODY
 /
 CREATE OR REPLACE TYPE BODY tp_evento AS
@@ -93,7 +93,7 @@ CREATE OR REPLACE TYPE BODY tp_evento AS
         SELF.organizador := organizador;
         RETURN;
     END; 
-    MEMBER FUNCTION getDuracao RETURN NUMBER IS
+    FINAL MEMBER FUNCTION getDuracao RETURN NUMBER IS
     BEGIN
         RETURN data_fim - data_inicio;
     END;
@@ -144,7 +144,7 @@ CREATE OR REPLACE TYPE tp_participante AS OBJECT(
     email VARCHAR2(100),
     nomes REF tp_nome_participante,
 
-    MEMBER PROCEDURE getParticipantesInfo
+    NOT INSTANTIABLE MEMBER PROCEDURE getParticipantesInfo
 ) NOT FINAL;
 -- CREATE TABLE:
 CREATE TABLE Participante OF tp_participante (
