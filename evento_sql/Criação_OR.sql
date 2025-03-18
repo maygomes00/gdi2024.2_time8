@@ -31,7 +31,7 @@ CREATE OR REPLACE TYPE tp_organizador AS OBJECT(
 );
 /
 -- CREATE TYPE BODY
-CREATE OR REPLACE TYPE BODY tp_evento AS
+CREATE OR REPLACE TYPE BODY tp_organizador AS
     -- Compra o ganho com outro organizador retornando 1 caso o ganho seja maior, 0  caso seja igual, e -1 caso seja menor que o do outro organizador. 
     ORDER MEMBER FUNCTION comparaGanho (outro tp_organizador) RETURN INTEGER IS
         self_ganho NUMBER := 0;
