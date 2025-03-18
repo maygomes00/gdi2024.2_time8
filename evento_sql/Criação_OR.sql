@@ -77,7 +77,7 @@ CREATE OR REPLACE TYPE tp_evento AS OBJECT(
     capacidade_maxima NUMBER,
     organizador REF tp_organizador,
     CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR2, categoria VARCHAR2, inicio DATE, fim DATE, cep VARCHAR2, capacidade NUMBER, organizador REF tp_organizador) RETURN SELF AS RESULT
-) NOT INSTANTIABLE;
+);
 -- CREATE TYPE BODY
 /
 CREATE OR REPLACE TYPE BODY tp_evento AS
