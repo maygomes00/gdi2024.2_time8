@@ -497,14 +497,12 @@ CREATE TABLE Sessao OF tp_sessao (
 );
 
 
--- MINISTRAR
--- CREATE TABLE
 CREATE TABLE Ministrar (
-    ppalestrante NUMBER,
+    palestrante NUMBER,
     sessao NUMBER,
-    PRIMARY KEY (palestrante, sessao),
+    CONSTRAINT pk_ministrar PRIMARY KEY (palestrante, sessao),
     CONSTRAINT fk_ministrar_palestrante FOREIGN KEY (palestrante)
-        REFERENCES Palestrante (id_palestrante),
+        REFERENCES Palestrante (id_participante),
     CONSTRAINT fk_ministrar_sessao FOREIGN KEY (sessao)
         REFERENCES Sessao (id_sessao)
 );
