@@ -170,7 +170,7 @@ CREATE OR REPLACE TYPE tp_nome_participante AS OBJECT (
 );
 -- CREATE TABLE:
 CREATE TABLE Nomes_Participantes OF tp_nome_participante(
-    PRIMARY KEY(cpf)
+    cpf PRIMARY KEY
 );
 
 
