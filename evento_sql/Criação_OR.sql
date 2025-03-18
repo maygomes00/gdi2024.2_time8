@@ -462,9 +462,9 @@ CREATE OR REPLACE TYPE tp_sessao AS OBJECT(
 );
 -- CREATE TABLE
 CREATE TABLE Sessao OF tp_evento (
-    PRIMARY KEY (id_sessao),
-    CONSTRAINT fk_sessao_evento FOREIGN KEY (id_evento)
-        REFERENCES Evento(id_evento),
+    id_sessao PRIMARY KEY,
+    evento WITH ROWID REFERENCES Evento NOT NULL,
+    
     CONSTRAINT ck_sessao_duracao CHECK (duracao > 0),
     CONSTRAINT ck_sessao_cpacidade CHECK (capacidade > 0),
     CONSTRAINT ck_sessao_datas CHECK (data_fim_sessao >= data_inicio_sessao),
@@ -481,8 +481,8 @@ CREATE TABLE Sessao OF tp_evento (
 -- MINISTRAR
 -- CREATE TABLE
 CREATE TABLE Ministrar (
-    palestrante REF tp_palestrante,
-    sessao REF tp_sessao,
+    ppalestrante NUMBER,
+    sessao NUMBER,
     PRIMARY KEY (palestrante, sessao),
     CONSTRAINT fk_ministrar_palestrante FOREIGN KEY (palestrante)
         REFERENCES Palestrante (id_palestrante),
@@ -494,10 +494,10 @@ CREATE TABLE Ministrar (
 -- PARTICIPA
 -- CREATE TABLE
 CREATE TABLE Participa (
-    participante REF tp_participante,
-    sessao REF tp_sessao,
-    evento REF tp_evento,
-    PRIMARY KEY (sessao),
+    participante NUMBER,
+    sessao NUMBER,
+    evento NUMBER,
+    CONSTRAINT pk_participa PRIMARY KEY (sessao),
     CONSTRAINT fk_participa_participante FOREIGN KEY (participante) 
         REFERENCES Participante(id_participante),
     CONSTRAINT fk_participa_sessao FOREIGN KEY (sessao) 
