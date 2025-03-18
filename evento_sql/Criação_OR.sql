@@ -329,9 +329,7 @@ END;
 /
 -- CREATE TABLE (SUBTYPE):
 CREATE TABLE Externo OF tp_externo(
-    PRIMARY KEY (id_participante),
-    CONSTRAINT fk_externo_participante FOREIGN KEY (id_participante)
-        REFERENCES Participante (id_participante),
+    id_participante PRIMARY KEY,
     
     -- Definir os atributos obrigatórios
     instituicao NOT NULL
