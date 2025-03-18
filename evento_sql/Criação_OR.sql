@@ -518,15 +518,15 @@ CREATE OR REPLACE TYPE tp_fornecedor AS OBJECT (
 );
 -- CREATE TABLE
 CREATE TABLE Fornecedor OF tp_fornecedor (
-    PRIMARY KEY (id_fornecedor)
+    id_fornecedor PRIMARY KEY
 );
 
 
 -- CONTRATO
 -- CREATE TYPE:
 CREATE OR REPLACE TYPE tp_contrato AS OBJECT (
-    org_responsavel REF tp_organizador,
-    evento REF tp_evento,
+    org_responsavel NUMBER,
+    evento NUMBER,
     contrato NUMBER,
     data_contrato DATE,
     descricao_servico VARCHAR2(500),
@@ -536,7 +536,7 @@ CREATE OR REPLACE TYPE tp_contrato AS OBJECT (
 );
 -- CREATE TABLE
 CREATE TABLE Contrato OF tp_contrato (
-    PRIMARY KEY (org_responsavel, evento, contrato),
+    CONSTRAINT pk_contrato PRIMARY KEY (org_responsavel, evento, contrato),
     CONSTRAINT fk_contrato_organizador FOREIGN KEY (org_responsavel)
         REFERENCES Organizador(id_organizador),
     CONSTRAINT fk_contrato_evento FOREIGN KEY (evento)
