@@ -558,7 +558,7 @@ CREATE TABLE Contrato OF tp_contrato (
         REFERENCES Organizador(id_organizador),
     CONSTRAINT fk_contrato_evento FOREIGN KEY (evento)
         REFERENCES Evento(id_evento),
-    CONSTRAINT fk_contrato_fornecedor FOREIGN KEY (contratado)
+    CONSTRAINT fk_contrato_fornecedor FOREIGN KEY (contrato)
         REFERENCES Fornecedor (id_fornecedor),
     
     -- Restrições de integralidade
