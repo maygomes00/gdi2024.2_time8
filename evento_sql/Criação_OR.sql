@@ -179,21 +179,18 @@ CREATE TABLE Nomes_Participantes OF tp_nome_participante(
 -- CREATE TYPE:
 CREATE OR REPLACE TYPE tp_participante AS OBJECT(
     id_participante NUMBER,
-    cpf VARCHAR2(11),
+    cpf REF tp_nome_participante,
     email VARCHAR2(100),
-    nomes REF tp_nome_participante,
 
     NOT INSTANTIABLE MEMBER PROCEDURE getParticipantesInfo
-) NOT FINAL;
+) NOT INSTANTIABLE NOT FINAL;
 -- CREATE TABLE:
 CREATE TABLE Participante OF tp_participante (
-    PRIMARY KEY(id_participante),
-    CONSTRAINT fk_nomes_participante FOREIGN KEY (cpf)
-        REFERENCES Nomes_Participantes(cpf) ON DELETE SET NULL,
-    
+    id_participante PRIMARY KEY,
+    cpf WITH ROWID REFERENCES Nomes_Participantes NOT NULL,
+   
     -- Definir os atributos obrigatórios
-    cpf UNIQUE NOT NULL,
-    email NOT NULL 
+    email NOT NULL
 );
 
 
