@@ -261,9 +261,7 @@ END;
 /
 -- CREATE TABLE (SUBTYPE):
 CREATE TABLE Aluno OF tp_aluno(
-    PRIMARY KEY (id_participante),
-    CONSTRAINT fk_aluno_participante FOREIGN KEY (id_participante)
-        REFERENCES Participante(id_participante),
+    id_participante PRIMARY KEY,
 
     -- Definir os atributos obrigatórios
     matricula UNIQUE NOT NULL
