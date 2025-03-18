@@ -306,7 +306,7 @@ CREATE TABLE Professor OF tp_professor(
 -- EXTERNO
 -- CREATE TYPE (SUBTYPE):
 CREATE OR REPLACE TYPE tp_externo UNDER tp_participante(
-    intituicao VARCHAR2(100),
+    instituicao VARCHAR2(100),
 
     CONSTRUCTOR FUNCTION tp_externo (id_participante NUMBER, nome VARCHAR2, instituicao VARCHAR2) RETURN SELF AS RESULT,
     OVERRIDING MEMBER PROCEDURE getParticipantesInfo
@@ -340,7 +340,7 @@ CREATE TABLE Externo OF tp_externo(
 -- PRECO_INGRESSOS
 -- CREATE TYPE:
 CREATE OR REPLACE TYPE tp_preco_ingresso AS OBJECT(
-    evento REF tp_evento,
+    evento NUMBER,
     tipo VARCHAR2(50),
     preco NUMBER,
     CONSTRUCTOR FUNCTION tp_preco_ingresso (evento REF tp_evento, tipo VARCHAR, preco NUMBER) RETURN SELF AS RESULT,
@@ -349,7 +349,7 @@ CREATE OR REPLACE TYPE tp_preco_ingresso AS OBJECT(
 -- CREATE TYPE BODY
 /
 CREATE OR REPLACE TYPE BODY tp_preco_ingresso AS
-    CONSTRUCTOR FUNCTION tp_preco_ingresso (evento REF tp_evento, tipo VARCHAR, preco NUMBER) RETURN SELF AS RESULT IS
+    CONSTRUCTOR FUNCTION tp_preco_ingresso (evento NUMBER, tipo VARCHAR, preco NUMBER) RETURN SELF AS RESULT IS
     BEGIN
         SELF.evento := evento;
         SELF.tipo := tipo;
@@ -364,9 +364,10 @@ END;
 /
 -- CREATE TABLE:
 CREATE TABLE Preco_Ingressos OF tp_preco_ingresso(
-    PRIMARY KEY(evento, tipo),
+    CONSTRAINT pk_preco_ingresso PRIMARY KEY(evento, tipo),
     CONSTRAINT fk_preco_ingresso_evento FOREIGN KEY (evento)
         REFERENCES Evento(id_evento),
+
     CONSTRAINT ck_preco_ingresso_tipo CHECK (tipo IN ('Estudante', 'Geral', 'VIP'))
 );
 -- Trigger que adiciona objetos de preço de ingresso toda vez que um novo evento é adicionado em tb_evento. 
