@@ -481,7 +481,7 @@ CREATE OR REPLACE TYPE tp_sessao AS OBJECT(
     evento REF tp_evento
 );
 -- CREATE TABLE
-CREATE TABLE Sessao OF tp_evento (
+CREATE TABLE Sessao OF tp_sessao (
     id_sessao PRIMARY KEY,
     evento WITH ROWID REFERENCES Evento NOT NULL,
     
@@ -492,7 +492,6 @@ CREATE TABLE Sessao OF tp_evento (
     -- Definir os atributos obrigatórios
     titulo NOT NULL,
     descricao NOT NULL,
-    evento NOT NULL,
     data_inicio_sessao NOT NULL,
     data_fim_sessao NOT NULL
 );
