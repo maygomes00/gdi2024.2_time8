@@ -76,12 +76,12 @@ CREATE OR REPLACE TYPE tp_evento AS OBJECT(
     CEP REF tp_endereco,
     capacidade_maxima NUMBER,
     organizador REF tp_organizador,
-    CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR, categoria VARCHAR, inicio DATE, fim DATE, cep VARCHAR, capacidade NUMBER, organizador NUMBER) RETURN SELF AS RESULT
+    CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR2, categoria VARCHAR2, inicio DATE, fim DATE, cep VARCHAR2, capacidade NUMBER, organizador REF tp_organizador) RETURN SELF AS RESULT
 );
 -- CREATE TYPE BODY
 /
 CREATE OR REPLACE TYPE BODY tp_evento AS
-    CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR, categoria VARCHAR, inicio DATE, fim DATE, cep VARCHAR, capacidade NUMBER, organizador NUMBER) RETURN SELF AS RESULT IS
+    CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR2, categoria VARCHAR2, inicio DATE, fim DATE, cep VARCHAR2, capacidade NUMBER, organizador REF tp_organizador) RETURN SELF AS RESULT IS
     BEGIN
         SELF.id_evento := id;
         SELF.nome := nome;
@@ -91,6 +91,7 @@ CREATE OR REPLACE TYPE BODY tp_evento AS
         SELF.CEP := cep;
         SELF.capacidade_maxima := capacidade;
         SELF.organizador := organizador;
+        RETURN;
     END; 
     MEMBER FUNCTION getDuracao RETURN NUMBER IS
     BEGIN
@@ -128,7 +129,7 @@ CREATE OR REPLACE TYPE tp_nome_participante AS OBJECT (
     cpf VARCHAR2(11),
     nome VARCHAR2(50),
     sobrenome VARCHAR2(50)
-)
+);
 -- CREATE TABLE:
 CREATE TABLE Nomes_Participantes OF tp_nome_participante(
     PRIMARY KEY(cpf)
@@ -141,7 +142,9 @@ CREATE OR REPLACE TYPE tp_participante AS OBJECT(
     id_participante NUMBER,
     cpf VARCHAR2(11),
     email VARCHAR2(100),
-    nomes REF tp_nome_participante
+    nomes REF tp_nome_participante,
+
+    MEMBER PROCEDURE getParticipantesInfo
 ) NOT FINAL;
 -- CREATE TABLE:
 CREATE TABLE Participante OF tp_participante (
@@ -174,8 +177,28 @@ CREATE TABLE Telefone_Participante OF tp_telefone_participante(
 -- CREATE SUBTYPE:
 CREATE OR REPLACE TYPE tp_palestrante UNDER tp_palestrante(
     biografia VARCHAR2(500),
-    perfil_linkedin VARCHAR2(200)
+    perfil_linkedin VARCHAR2(200),
+
+    CONSTRUCTOR FUNCTION tp_palestrante (id_participante NUMBER, nome VARCHAR2) RETURN SELF AS RESULT,
+    OVERRIDING MEMBER PROCEDURE getParticipantesInfo
 );
+-- CREATE TYPE BODY
+/
+CREATE OR REPLACE TYPE BODY tp_palestrante AS 
+    CONSTRUCTOR FUNCTION tp_participante (id_participante NUMBER, nome VARCHAR2, biografia VARCHAR2, perfil_linkedin VARCHAR2) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.id_participante := id_participante;
+        SELF.nome := nome;
+        SELF.biografia := biografia;
+        SELF.perfil_linkedin := perfil_linkedin;
+        RETURN;
+    END;
+    OVERRIDING MEMBER PROCEDURE getParticipantesInfo IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Palestrante: ' || SELF.nome || ' Biografia: ' || SELF.nome || ' Biografia: ' || SELF.biografia || ' Linkedin: ' || SELF.perfil_linkedin);
+    END;
+END;
+/
 -- CREATE TABLE (SUBTYPE):
 CREATE TABLE Palestrante OF tp_palestrante(
     PRIMARY KEY (id_participante),
@@ -187,8 +210,27 @@ CREATE TABLE Palestrante OF tp_palestrante(
 -- ALUNO
 -- CREATE SUBTYPE:
 CREATE OR REPLACE TYPE tp_aluno UNDER tp_participante (
-    matricula VARCHAR2(20)
+    matricula VARCHAR2(20),
+
+    CONSTRUCTOR FUNCTION tp_aluno (id_participante NUMBER, nome VARCHAR2, matricula VARCHAR2) RETURN SELF AS RESULT,
+    OVERRIDING MEMBER PROCEDURE getParticipantesInfo
 );
+-- CREATE TYPE BODY
+/
+CREATE OR REPLACE TYPE BODY tp_aluno AS
+    CONSTRUCTOR FUNCTION tp_aluno (id_participante NUMBER, nome VARCHAR2, matricula VARCHAR2) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.id_participante := id_participante;
+        SELF.nome := nome;
+        SELF.matricula := matricula;
+        RETURN;
+    END;
+    OVERRIDING MEMBER PROCEDURE getParticipanteInfo IS 
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Aluno: ' || SELF.nome || ' Matrícula: ' || SELF.matricula);
+    END;
+END;
+/
 -- CREATE TABLE (SUBTYPE):
 CREATE TABLE Aluno OF tp_aluno(
     PRIMARY KEY (id_participante),
@@ -203,8 +245,27 @@ CREATE TABLE Aluno OF tp_aluno(
 -- PROFESSOR
 -- CREATE SUBTYPE:
 CREATE OR REPLACE TYPE tp_professor UNDER tp_participante (
-    id_professor VARCHAR2(20)
+    id_professor VARCHAR2(20),
+
+    CONSTRUCTOR FUNCTION tp_professor (id_participante NUMBER, nome VARCHAR2) RETURN SELF AS RESULT,
+    OVERRIDING MEMBER PROCEDURE getParticipantesInfo
 );
+-- CREAT TYPE BODY
+/
+CREATE OR REPLACE TYPE BODY tp_professor AS
+    CONSTRUCTOR FUNCTION tp_professor (id_participante NUMBER, nome VARCHAR2, id_professor VARCHAR2) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.id_participante := id_participante;
+        SELF.nome := nome;
+        SELF. is_professor := id_professor;
+        RETURN;
+    END;
+    OVERRIDING MEMBER PROCEDURE getParticipantesInfo IS 
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Professor: ' || SELF.nome);
+    END;
+END;
+/
 -- CREATE TABLE (SUBTYPE):
 CREATE TABLE Professor OF tp_professor(
     PRIMARY KEY (id_participante),
@@ -219,15 +280,34 @@ CREATE TABLE Professor OF tp_professor(
 -- EXTERNO
 -- CREATE TYPE (SUBTYPE):
 CREATE OR REPLACE TYPE tp_externo UNDER tp_participante(
-    intituicao VARCHAR2(100)
+    intituicao VARCHAR2(100),
+
+    CONSTRUCTOR FUNCTION tp_externo (id_participante NUMBER, nome VARCHAR2, instituicao VARCHAR2) RETURN SELF AS RESULT,
+    OVERRIDING MEMBER PROCEDURE getParticipantesInfo
 );
+-- CREATE TYPE BODY
+/
+CREATE OR REPLACE TYPE BODY tp_externo AS
+    CONSTRUCTOR FUNCTION tp_extreno (id_participante NUMBER, nome VARCHAR2, instituicao VARCHAR2) RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.id_participante := id_participante;
+        SELF.nome := nome;
+        SELF.instituicao := instituicao;
+        RETURN;
+    END;
+    OVERRIDING MEMBER PROCEDURE getParticipantesInfo IS 
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Participante Externo: ' || SELF.nome || ' Instituição: ' || SELF.instituicao);
+    END;
+END;
+/
 -- CREATE TABLE (SUBTYPE):
 CREATE TABLE Externo OF tp_externo(
     PRIMARY KEY (id_participante),
     CONSTRAINT fk_externo_participante FOREIGN KEY (id_participante)
         REFERENCES Participante (id_participante),
     
-    -- Defirni os atributos obrigatórios
+    -- Definir os atributos obrigatórios
     instituicao NOT NULL
 );
 
@@ -249,6 +329,7 @@ CREATE OR REPLACE TYPE BODY tp_preco_ingresso AS
         SELF.evento := evento;
         SELF.tipo := tipo;
         SELF.preco := preco;
+        RETURN;
     END;
     MEMBER PROCEDURE setPreco (valor NUMBER) IS 
     BEGIN
