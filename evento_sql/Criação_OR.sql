@@ -176,11 +176,18 @@ CREATE TABLE Nomes_Participantes OF tp_nome_participante(
 
 
 -- PARTICIPANTE
+-- CREATE TYPE TELEFONE:
+CREATE OR REPLACE TYPE tp_telefone_participante AS OBJECT(
+    telefone VARCHAR2(15)
+);
+-- CREATE VARRAY PARA TELEFONE (NO MÁXIMO, 2 TELEFONES):
+CREATE OR REPLACE TYPE v_telefone_participante AS VARRAY (2) OF REF tp_telefone_participante;
 -- CREATE TYPE:
 CREATE OR REPLACE TYPE tp_participante AS OBJECT(
     id_participante NUMBER,
     cpf REF tp_nome_participante,
     email VARCHAR2(100),
+    telefone REF tp_telefone_participante,
 
     NOT INSTANTIABLE MEMBER PROCEDURE getParticipantesInfo
 ) NOT INSTANTIABLE NOT FINAL;
@@ -191,22 +198,6 @@ CREATE TABLE Participante OF tp_participante (
    
     -- Definir os atributos obrigatórios
     email NOT NULL
-);
-
-
-
--- TELEFONE_PARTICIPANTE
--- CREATE TYPE:
-CREATE OR REPLACE TYPE tp_telefone_participante AS OBJECT(
-    participante NUMBER,
-    telefone VARCHAR2(15),
-    telefone_participante REF tp_participante
-);
--- CREATE TABLE:
-CREATE TABLE Telefone_Participante OF tp_telefone_participante(
-    PRIMARY KEY (participante, telefone),
-    CONSTRAINT fk_telefone_participante FOREIGN KEY (participante)
-        REFERENCES Participante(id_participante)
 );
 
 
