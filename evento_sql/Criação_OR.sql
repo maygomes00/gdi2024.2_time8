@@ -461,7 +461,7 @@ CREATE TABLE Ingresso OF tp_ingresso(
     CONSTRAINT fk_ingresso_participante FOREIGN KEY (id_participante)
         REFERENCES Participante(id_participante),
     CONSTRAINT fk_ingresso_preco_ingressos FOREIGN KEY (id_evento, tipo)
-        REFERENCES Preco_Ingresso(evento, tipo),
+        REFERENCES Preco_Ingressos(evento, tipo),
     CONSTRAINT ck_status_ingresso CHECK (ingresso_status IN ('ativo', 'cancelado', 'usado'))
 );
 
