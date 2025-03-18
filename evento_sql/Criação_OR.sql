@@ -96,7 +96,7 @@ CREATE OR REPLACE TYPE BODY tp_evento AS
     FINAL MEMBER FUNCTION getDuracao RETURN NUMBER IS
     BEGIN
         RETURN data_fim - data_inicio;
-    END;
+    END getDuracao;
 END;
 /
 -- ALTER TYPE
