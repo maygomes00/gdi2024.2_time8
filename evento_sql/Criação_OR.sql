@@ -210,7 +210,7 @@ CREATE OR REPLACE TYPE tp_participante AS OBJECT(
     telefone REF tp_telefone_participante,
 
     NOT INSTANTIABLE MEMBER PROCEDURE getParticipantesInfo
-) NOT FINAL;
+) NOT INSTANTIABLE NOT FINAL;
 -- CREATE TABLE:
 CREATE TABLE Participante OF tp_participante (
     id_participante PRIMARY KEY,
