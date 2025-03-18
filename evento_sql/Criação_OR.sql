@@ -144,11 +144,9 @@ END;
 /
 -- CREATE TABLE
 CREATE TABLE Evento OF tp_evento (
-    PRIMARY KEY(id_evento),
-    CONSTRAINT fk_evento_endereco FOREIGN KEY (CEP)
-        REFERENCES Endereco(CEP),
-    CONSTRAINT fk_evento_organizador FOREIGN KEY (organizador)
-        REFERENCES Organizador(id_organizador),
+    id_eveNto PRIMARY KEY,
+    CEP WITH ROWID REFERENCES Endereco NOT NULL,
+    organizador WITH ROWID REFERENCES Organizador NOT NULL,
     
     -- Restrições de integridade
     CONSTRAINT ck_evento_categoria CHECK (categoria IN ('Seminário', 'Workshop', 'Congresso', 'Feira')),
@@ -158,9 +156,7 @@ CREATE TABLE Evento OF tp_evento (
     -- Definir os atributos obrigatórios
     nome NOT NULL,
     data_inicio NOT NULL,
-    data_fim NOT NULL,
-    CEP NOT NULL,
-    organizador NOT NULL
+    data_fim NOT NULL
 );
 
 
