@@ -79,9 +79,8 @@ CREATE OR REPLACE TYPE tp_evento AS OBJECT(
     CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR2, categoria VARCHAR2, inicio DATE, fim DATE, cep VARCHAR2, capacidade NUMBER, organizador REF tp_organizador) RETURN SELF AS RESULT
 );
 -- CREATE TYPE BODY
-/
 CREATE OR REPLACE TYPE BODY tp_evento AS
-    CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR2, categoria VARCHAR2, inicio DATE, fim DATE, cep VARCHAR2, capacidade NUMBER, organizador REF tp_organizador) RETURN SELF AS RESULT IS
+    CONSTRUCTOR FUNCTION tp_evento (id NUMBER, nome VARCHAR2, categoria VARCHAR2, inicio DATE, fim DATE, cep REF tp_endereco, capacidade NUMBER, organizador REF tp_organizador) RETURN SELF AS RESULT IS
     BEGIN
         SELF.id_evento := id;
         SELF.nome := nome;
@@ -91,7 +90,7 @@ CREATE OR REPLACE TYPE BODY tp_evento AS
         SELF.CEP := cep;
         SELF.capacidade_maxima := capacidade;
         SELF.organizador := organizador;
-        RETURN;
+        RETURN SELF;
     END; 
     FINAL MEMBER FUNCTION getDuracao RETURN NUMBER IS
     BEGIN
