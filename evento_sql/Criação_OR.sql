@@ -57,16 +57,14 @@ END;
 /
 -- CREATE TABLE:
 CREATE TABLE Organizador OF tp_organizador (
-    PRIMARY KEY (id_organizador),
-    CONSTRAINT fk_supervisor FOREIGN KEY (supervisor)
-        REFERENCES Organizador(id_organizador) ON DELETE SET NULL,
+    id_organizador PRIMARY KEY,
+    supervisor WITH ROWID REFERENCES Organizador,
     
     -- Definir os atributos obrigatórios
     nome_completo NOT NULL,
     cargo NOT NULL,
     departamento NOT NULL
 );
-
 
 
 -- ENDEREÇO
