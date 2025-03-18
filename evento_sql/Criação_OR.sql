@@ -190,7 +190,7 @@ CREATE OR REPLACE TYPE tp_participante AS OBJECT(
     telefone REF tp_telefone_participante,
 
     NOT INSTANTIABLE MEMBER PROCEDURE getParticipantesInfo
-) NOT INSTANTIABLE NOT FINAL;
+) NOT FINAL;
 -- CREATE TABLE:
 CREATE TABLE Participante OF tp_participante (
     id_participante PRIMARY KEY,
@@ -396,8 +396,8 @@ END;
 -- INGRESSO
 -- CREATE TYPE:
 CREATE OR REPLACE TYPE tp_ingresso AS OBJECT(
-    id_evento REF tp_evento,
-    id_participante REF tp_participante,
+    id_evento NUMBER,
+    id_participante NUMBER,
     tipo VARCHAR2(50),
     ingresso_status VARCHAR2(50),
     data_emissao DATE,
@@ -435,7 +435,7 @@ END;
 /
 -- CREATE TABLE:
 CREATE TABLE Ingresso OF tp_ingresso(
-    PRIMARY KEY (id_evento, id_participante),
+    CONSTRAINT pk_ingresso PRIMARY KEY (id_evento, id_participante),
     CONSTRAINT fk_ingresso_evento FOREIGN KEY (id_evento)
         REFERENCES Evento (id_evento),
     CONSTRAINT fk_ingresso_participante FOREIGN KEY (id_participante)
