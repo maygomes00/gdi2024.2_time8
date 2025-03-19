@@ -165,8 +165,8 @@ END;
 -- CREATE TABLE
 CREATE TABLE Evento OF tp_evento (
     id_eveNto PRIMARY KEY,
-    CEP WITH ROWID REFERENCES Endereco NOT NULL,
-    organizador WITH ROWID REFERENCES Organizador NOT NULL,
+    CEP SCOPE IS Endereco NOT NULL,
+    organizador SCOPE IS Organizador NOT NULL,
     
     -- Restrições de integridade
     CONSTRAINT ck_evento_categoria CHECK (categoria IN ('Seminário', 'Workshop', 'Congresso', 'Feira')),
