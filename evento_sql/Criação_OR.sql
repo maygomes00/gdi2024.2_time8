@@ -445,8 +445,8 @@ CREATE OR REPLACE TYPE BODY tp_ingresso AS
     BEGIN
         SELECT e INTO i_evento FROM Evento e WHERE id_evento = SELF.id_evento;
 
-        IF i_evento.data_fim < SYSDATE OR SELF.ingresso_status = "cancelado"
-         OR SELF.ingresso_status = "usado" THEN
+        IF i_evento.data_fim < SYSDATE OR SELF.ingresso_status = 'cancelado'
+         OR SELF.ingresso_status = 'usado' THEN
             RETURN 0;
         ELSE
             RETURN 1;
