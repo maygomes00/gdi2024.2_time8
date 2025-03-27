@@ -228,16 +228,28 @@ CREATE OR REPLACE TYPE tp_palestrante UNDER tp_participante(
     biografia VARCHAR2(500),
     perfil_linkedin VARCHAR2(200),
 
-    CONSTRUCTOR FUNCTION tp_palestrante (id_participante NUMBER, nome VARCHAR2) RETURN SELF AS RESULT,
+    CONSTRUCTOR FUNCTION tp_palestrante (id_participante NUMBER,
+        cpf REF tp_nome_participante,
+        email VARCHAR2,
+        telefone REF tp_telefone_participante,
+        biografia VARCHAR2,
+        perfil_linkedin VARCHAR2) RETURN SELF AS RESULT,
     OVERRIDING MEMBER PROCEDURE getParticipantesInfo
 );
 -- CREATE TYPE BODY
 /
 CREATE OR REPLACE TYPE BODY tp_palestrante AS 
-    CONSTRUCTOR FUNCTION tp_participante (id_participante NUMBER, nome VARCHAR2, biografia VARCHAR2, perfil_linkedin VARCHAR2) RETURN SELF AS RESULT IS
+    CONSTRUCTOR FUNCTION tp_participante (id_participante NUMBER,
+        cpf REF tp_nome_participante,
+        email VARCHAR2,
+        telefone REF tp_telefone_participante,
+        biografia VARCHAR2,
+        perfil_linkedin VARCHAR2) RETURN SELF AS RESULT IS
     BEGIN
         SELF.id_participante := id_participante;
-        SELF.nome := nome;
+        SELF.cpf := cpf;
+        SELF.email := email;
+        SELF.telefone := telefone;
         SELF.biografia := biografia;
         SELF.perfil_linkedin := perfil_linkedin;
         RETURN;
