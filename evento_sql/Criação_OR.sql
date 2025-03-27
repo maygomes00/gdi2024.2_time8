@@ -588,14 +588,14 @@ CREATE OR REPLACE TYPE tp_certificado AS OBJECT (
     data_emissao DATE,
     carga_horaria NUMBER,
     certificado_status VARCHAR2 (20),
-    id_evento REF tp_evento,
-    id_participante REF tp_participante
+    id_evento NUMBER,
+    id_participante NUMBER
 );
 -- CREATE TABLE
 CREATE TABLE Certificado OF tp_certificado (
     numero_certificado PRIMARY KEY,
-    id_evento WITH ROWID REFERENCES Evento,
-    id_participante WITH ROWID REFERENCES Participante,
+    id_evento SCOPE IS Evento,
+    id_participante SCOPE IS Participante,
 
     -- Restriçõs de integralidade
     CONSTRAINT ck_certificado_carga_horaria CHECK (carga_horaria > 0),
