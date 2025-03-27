@@ -557,6 +557,7 @@ CREATE OR REPLACE TYPE tp_contrato AS OBJECT (
     org_responsavel NUMBER,
     evento NUMBER,
     contrato NUMBER,
+    contratado NUMBER,
     data_contrato DATE,
     descricao_servico VARCHAR2(500),
     valor NUMBER,
@@ -570,7 +571,7 @@ CREATE TABLE Contrato OF tp_contrato (
         REFERENCES Organizador(id_organizador),
     CONSTRAINT fk_contrato_evento FOREIGN KEY (evento)
         REFERENCES Evento(id_evento),
-    CONSTRAINT fk_contrato_fornecedor FOREIGN KEY (contrato)
+    CONSTRAINT fk_contrato_fornecedor FOREIGN KEY (contratado)
         REFERENCES Fornecedor (id_fornecedor),
     
     -- Restrições de integralidade
