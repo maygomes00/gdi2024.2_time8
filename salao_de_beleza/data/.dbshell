@@ -73,3 +73,28 @@ db.loadServerScripts();
 removerServico("Massagem Relaxante 1h");
 db.loadServerScripts();
 removerServico("Massagem Relaxante 1h");
+use salao_de_beleza
+load("scripts/insercao.js")
+load("scripts/atualizacao.js")
+db.clientes.deleteOne({ nome: "Carlos Souza" });
+db.system.js.insertOne({     _id: "removeServico",     value: function (nomeServico){         // Remove serviço da coleção de serviços.         db.servicos.deleteOne({             nome: nomeServico         })         // Remove serviço dos arrays de serviço dos profissionais que tiverem ele.         db.funcionarios.updateMany(             { servicos: nomeServico},             { $pull: { servicos: nomeServico}}         )     } })
+db.loadServerScripts();
+removerServico("Massagem Relaxante 1h");
+print(removerServico("Massagem Relaxante 1h");)
+print(removerServico("Massagem Relaxante 1h"));
+removerServico("Massagem Relaxante 1h");
+db.system.js.find().pretty();
+removeServico("Massagem Relaxante 1h");
+db.servicos.countDocuments({ preco: { $gte: 80 } });
+db.servicos.find({ preco: { $gte: 80 } }).pretty();
+db.servicos.find({ preco: { $gte: 80 } });
+db.funcionarios.find({ disponibilidade: { $in: ["Quinta"] } }).pretty();
+db.funcionarios.find({ disponibilidade: { $in: ["Quinta"] } });
+db.funcionarios.find({ disponibilidade: { $in: ["Quarta"] } });
+db.funcionarios.find({ disponibilidade: { $in: ["Quarta"] } }).pretty();
+db.funcionarios.find({ disponibilidade: { $in: ["Terça"] } }).pretty();
+db.servicos.aggregate([   {     $group: {       _id: null,       precoMedio: { $avg: "$preco" }     }   } ]);
+db.servicos.find( { $max: "$preco" } ).pretty();
+db.servicos.find( {{ $max: "$preco" }} ).pretty();
+db.servicos.aggregate([   {     $group: {       _id: null,       precoMaximo: { $max: "$preco" }     }   } ]);
+use salao_de_beleza
