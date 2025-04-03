@@ -1,16 +1,19 @@
 //No shell,  colocar use salao_de_beleza;
 
-// Encontrar todos os clientes e formatar a saída com PRETTY
-db.clientes.find().pretty();
+// Quantidade de serviços com preço maior ou igual a 80 (COUNTDOCUMENTS e GTE)
+db.servicos.countDocuments({ preco: { $gte: 80 } });
+
+// Encontrar quais os serviços com preço maior ou igual a 80 e formatar a saída com PRETTY (FIND e PRETTY)
+db.servicos.find({ preco: { $gte: 80 } }).pretty();
 
 // Encontrar profissionais com disponibilidade às quintas-feiras (FIND e FILTER)
-db.profissionais.find({ disponibilidade: { $in: ["Quinta"] } }).pretty();
+db.funcionarios.find({ disponibilidade: { $in: ["Terça"] } }).pretty();
 
 // (PROJECT)
 
 
 // Quantidade de serviços com preço maior ou igual a 50 (COUNTDOCUMENTS e GTE)
-db.servicos.countDocuments({ preco: { $gte: 50 } });
+db.servicos.countDocuments({ preco: { $gte: 80 } });
 
 // Agregaçar e criar Preço médio dos serviços (AGGREGATE, AVG)
 db.servicos.aggregate([
