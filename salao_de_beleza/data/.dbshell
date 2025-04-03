@@ -55,3 +55,21 @@ db.profissionais.updateOne(     { nome: "Joana" },     { $addToSet: { servicos: 
 db.profissionais.updateMany(     { disponibilidade: { $all: ["Segunda", "Terça"] } },     { $addToSet: { servicos: "Sobrancelha Design + Henna" } }   );
 db.servicos.insertOne({   "nome": "Corte de Cabelo Masculino",   "preco": 40.00 })
 db.profissionais.insertOne({   "nome": "João",   "disponibilidade": ["Sabado", "Domingo"],   "servicos": ["Corte de Cabelo Masculino"] })
+load("scripts/insercao.js")
+use salao_de_beleza
+load("scripts/insercao.js")
+db.servicos.updateOne(     { nome: "Corte de Cabelo Feminino" },     { $set: { preco: 75.00 } }   );
+db.clientes.updateOne(     { nome: "Gabriel Santos" },     { $set: { telefone: "555-3333" } }   );
+db.profissionais.updateOne(     { nome: "Joana" },     { $addToSet: { servicos: "Hidratação Profunda" } }   );
+db.profissionais.updateMany(     { disponibilidade: { $all: ["Segunda", "Terça"] } },     { $addToSet: { servicos: "Sobrancelha Design + Henna" } }   );
+db.servicos.insertOne({   "nome": "Corte de Cabelo Masculino",   "preco": 40.00 })
+db.profissionais.insertOne({   "nome": "João",   "disponibilidade": ["Sabado", "Domingo"],   "servicos": ["Corte de Cabelo Masculino"] })
+db.profissionais.renameCollection("funcionarios");
+load("scripts/insercao.js")
+load("scripts/atualizacao.js")
+db.clientes.deleteOne({ nome: "Carlos Souza" });
+db.system.js.insertOne({     _id: "removeServico",     value: function (nomeServico){         // Remove serviço da coleção de serviços.         db.servicos.deleteOne({             nome: nomeServico         })         // Remove serviço dos arrays de serviço dos profissionais que tiverem ele.         db.funcionarios.updateMany(             { servicos: nomeServico},             { $pull: { servicos: nomeServico}}         )     } })
+db.loadServerScripts();
+removerServico("Massagem Relaxante 1h");
+db.loadServerScripts();
+removerServico("Massagem Relaxante 1h");

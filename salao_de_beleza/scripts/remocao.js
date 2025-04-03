@@ -21,4 +21,4 @@ db.system.js.insertOne({
 
 // Usa a função que remove serviços para remover o serviço "Massagem Relaxante 1h" (FUNCTION)
 db.loadServerScripts();
-print(removerServico("Massagem Relaxante 1h"));
+removeServico("Massagem Relaxante 1h");
