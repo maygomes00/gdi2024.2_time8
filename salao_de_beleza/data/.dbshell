@@ -45,3 +45,13 @@ db.clientes.updateOne(     { nome: "Gabriel Santos" },     { $set: { telefone: "
 db.profissionais.updateOne(     { nome: "Joana" },     { $addToSet: { servicos: "Hidratação Profunda" } }   );
 use salao_de_beleza
 load("scripts/insercao.js")
+show collections
+load("scripts/insercao.js")
+use salao_de_beleza
+load("scripts/insercao.js")
+db.servicos.updateOne(     { nome: "Corte de Cabelo Feminino" },     { $set: { preco: 75.00 } }   );
+db.clientes.updateOne(     { nome: "Gabriel Santos" },     { $set: { telefone: "555-3333" } }   );
+db.profissionais.updateOne(     { nome: "Joana" },     { $addToSet: { servicos: "Hidratação Profunda" } }   );
+db.profissionais.updateMany(     { disponibilidade: { $all: ["Segunda", "Terça"] } },     { $addToSet: { servicos: "Sobrancelha Design + Henna" } }   );
+db.servicos.insertOne({   "nome": "Corte de Cabelo Masculino",   "preco": 40.00 })
+db.profissionais.insertOne({   "nome": "João",   "disponibilidade": ["Sabado", "Domingo"],   "servicos": ["Corte de Cabelo Masculino"] })

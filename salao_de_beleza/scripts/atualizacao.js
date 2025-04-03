@@ -36,3 +36,6 @@ db.profissionais.insertOne({
   "disponibilidade": ["Sabado", "Domingo"],
   "servicos": ["Corte de Cabelo Masculino"]
 })
+
+// Renomear uma coleção (RENAMECOLLECTION)
+db.profissionais.renameCollection("funcionarios");

@@ -1,6 +1,3 @@
-// Renomear uma coleção (RENAMECOLLECTION)
-db.profissionais.renameCollection("funcionarios");
-
 // Calcular total de preços dos serviços por faixa de preço (MAPREDUCE)
 db.servicos.mapReduce(
   function () {
