@@ -2,25 +2,25 @@
 
 // Atualizar o preço de um serviço (UPDATEONE e SET)
 db.servicos.updateOne(
-    { nome: "Corte Feminino" },
+    { nome: "Corte de Cabelo Feminino" },
     { $set: { preco: 75.00 } }
   );
   
-  // Adicionar um serviço à lista de um profissional (ADDTOSET)
-  db.profissionais.updateOne(
-    { nome: "Carla" },
-    { $addToSet: { servicos: "Hidratação Capilar" } }
+// Atualizar o telefone de um cliente (UPDATEONE e SET)
+db.clientes.updateOne(
+    { nome: "Gabriel Santos" },
+    { $set: { telefone: "555-3333" } }
   );
-  
-  // Atualizar o telefone de um cliente (UPDATEONE)
-  db.clientes.updateOne(
-    { nome: "Rosane Pedroso" },
-    { $set: { telefone: "97333-3333" } }
+
+  // Adicionar um serviço à lista de um profissional (ADDTOSET)
+db.profissionais.updateOne(
+    { nome: "Joana" },
+    { $addToSet: { servicos: "Hidratação Profunda" } }
   );
   
   // Atualizar múltiplos profissionais para incluir "Sobrancelhas" como serviço (UPDATEMANY)
-  db.profissionais.updateMany(
+db.profissionais.updateMany(
     { disponibilidade: { $all: ["Segunda", "Terça"] } },
-    { $addToSet: { servicos: "Sobrancelhas" } }
+    { $addToSet: { servicos: "Sobrancelha Design + Henna" } }
   );
   

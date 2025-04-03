@@ -34,3 +34,14 @@ show collections
 show db
 docker cp scripts/ mongodb:/scripts
 ls /scripts
+use salao_de_beleza
+load("/scripts/insercao.js")
+ls -l /scripts/
+show collections
+use salao_de_beleza
+load("scripts/insercao.js")
+db.servicos.updateOne(     { nome: "Corte de Cabelo Feminino" },     { $set: { preco: 75.00 } }   );
+db.clientes.updateOne(     { nome: "Gabriel Santos" },     { $set: { telefone: "555-3333" } }   );
+db.profissionais.updateOne(     { nome: "Joana" },     { $addToSet: { servicos: "Hidratação Profunda" } }   );
+use salao_de_beleza
+load("scripts/insercao.js")
