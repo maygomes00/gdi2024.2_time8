@@ -98,3 +98,45 @@ db.servicos.find( { $max: "$preco" } ).pretty();
 db.servicos.find( {{ $max: "$preco" }} ).pretty();
 db.servicos.aggregate([   {     $group: {       _id: null,       precoMaximo: { $max: "$preco" }     }   } ]);
 use salao_de_beleza
+use salao_de_beleza
+load("scripts/insercao.js")
+load("scripts/atualizacao.js")
+load("scripts/remocao.js")
+db.servicos.countDocuments({ preco: { $gte: 80 } });
+db.servicos.find({ preco: { $gte: 80 } }).pretty();
+db.funcionarios.find({ disponibilidade: { $in: ["Terça"] } }).pretty();
+db.servicos.aggregate([   {     $group: {       _id: null,       precoMedio: { $avg: "$preco" }     }   } ]);
+db.servicos.aggregate([   {     $group: {       _id: null,       precoMaximo: { $max: "$preco" }     }   } ]);
+db.clientes.countDocuments({ email: { $exists: false } });
+db.servicos.find().sort({ preco: -1 }).limit(3);
+db.clientes.find({ aniversario: { $regex: "/12/" } }).pretty();
+db.servicos.createIndex({ nome: "text" });
+db.servicos.find({ $text: { $search: "Corte" } });
+load("scripts/consultas.js")
+use salao_de_beleza
+load("scripts/insercao.js")
+load("scripts/atualizacao.js")
+load("scripts/remocao.js")
+load("scripts/consultas.js")
+db.servicos.mapReduce(   function () {     emit(this.preco >= 100 ? "Alto" : "Baixo", this.preco);   },   function (key, values) {     return Array.sum(values);   },   { out: "faixa_de_preco" } );
+use salao_de_beleza
+load("scripts/insercao.js")
+load("scripts/atualizacao.js")
+load("scripts/remocao.js")
+load("scripts/consultas.js")
+db.servicos.mapReduce(   // Separa os serviços de duas categorias de acordo com o preço.   function () {     emit(this.preco >= 100 ? "Alto" : "Baixo", this.preco);   },   // Soma os preços dos serviços por categoria.   function (key, values) {     return Array.sum(values);   },   // Guarda o resultando no valor total de cada categoria em uma nova coleção.   { out: "faixa_de_preco" } );
+db.clientes.aggregate([   {     $lookup: {       from: "servicos",       localField: "_id",       foreignField: "_id",       as: "servicos_realizados"     }   } ]);
+db.servicos.aggregate([   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "servicos_realizados"     }   } ]);
+db.servicos.aggregate([   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "servicos_realizados"     }   } ]).prettt();
+db.servicos.aggregate([   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "servicos_realizados"     }   } ]);
+db.servicos.aggregate([   // Atribui os serviços aos funcionarios que realizam eles.   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "funcionarios_que_realizam"     }   },   {     $project: {       _id: 0,       nome: 1,       "funcionarios_que_realizam": 1     }   } ]);
+db.servicos.aggregate([   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "funcionarios"     }   },   {     $project: {       _id: 0,                // Exclui o campo _id       nome: 1,               // Mantém apenas o nome do serviço       "funcionarios.nome": 1 // Mantém apenas o nome dos funcionários     }   } ]);
+db.servicos.aggregate([   // Atribui os serviços aos funcionarios que realizam eles.   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "funcionarios"     }   },   {     $project: {       _id: 0,       nome: 1,       "funcionarios": 1     }   } ]);
+db.servicos.aggregate([   // Atribui os serviços aos funcionarios que realizam eles.   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "funcionarios"     }   },   {     $project: {       _id: 0,       nome: 1,       "funcionarios.nome": 1     }   } ]);
+db.servicos.aggregate([   // Atribui os serviços aos funcionarios que realizam eles.   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "funcionarios"     }   },   // Exibe apenas as informações indicadas.   {     $project: {       _id: 0,       nome: 1,       "funcionarios.nome": 1     }   } ]);
+;
+db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
+db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
+db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
+db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
+db.servicos.aggregate([   {     $project: {       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
