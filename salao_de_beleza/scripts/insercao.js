@@ -10,7 +10,7 @@ db.servicos.insertMany([
     { "nome": "Depilação - Axila", "preco": 50.00 }
     ]);
             
-db.funcionarios.insertOne({
+db.profissionais.insertOne({
     "nome": "Joana",
     "disponibilidade": ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"],
     "servicos": ["Manicure Banho em Gel + Alongamento"]
