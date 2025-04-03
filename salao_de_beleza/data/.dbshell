@@ -1,0 +1,36 @@
+show dbs
+use salao_de_beleza
+show dbs
+show collections
+db.cliente.find
+db.cliente.find()
+db.clientes.find()
+show dbs
+use salao_de_beleza
+show collections
+db.clientes.find().pretty()
+show collections
+show dbs
+load("scripts/insercao.js")
+load("/scripts/insercao.js")
+show collections
+show dbs
+show collections
+db.clientes.find().pretty()
+use salao_de_beleza
+db.profissionais.find({ disponibilidade: { $in: ["Quinta"] } }).pretty()
+show collections
+use salao_de_belesa
+load("/scripts/insercao.js");
+db.profissionais.find({ disponibilidade: { $in: ["Quinta"] } }).pretty();
+db.profissionais.renameCollection("funcionarios");
+db.profissionais.find({ disponibilidade: { $in: ["Quinta"] } }).pretty();
+db.funcionarios.renameCollection("profissionais");
+db.profissionais.find({ disponibilidade: { $in: ["Quinta"] } }).pretty();
+show colections
+show collections
+use salao_de_beleza
+show collections
+show db
+docker cp scripts/ mongodb:/scripts
+ls /scripts
