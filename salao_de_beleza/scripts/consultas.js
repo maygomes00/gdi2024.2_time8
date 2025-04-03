@@ -6,8 +6,8 @@ db.clientes.find().pretty();
 // Encontrar profissionais com disponibilidade às quintas-feiras (FIND e FILTER)
 db.profissionais.find({ disponibilidade: { $in: ["Quinta"] } }).pretty();
 
-// Mostrar apenas o nome e serviços dos profissionais (PROJECT)
-db.profissionais.find({}, { nome: 1, servicos: 1, _id: 0 }).pretty();
+// (PROJECT)
+
 
 // Quantidade de serviços com preço maior ou igual a 50 (COUNTDOCUMENTS e GTE)
 db.servicos.countDocuments({ preco: { $gte: 50 } });
