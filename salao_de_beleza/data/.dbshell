@@ -140,3 +140,41 @@ db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       p
 db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
 db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
 db.servicos.aggregate([   {     $project: {       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
+use salao_de_beleza
+load("scripts/insercao.js");
+load("scripts/atualizacao.js");
+load("scripts/remocao.js");
+load("scripts/consultas.js");
+db.servicos.mapReduce(   // Separa os serviços de duas categorias de acordo com o preço.   function () {     emit(this.preco >= 100 ? "Alto" : "Baixo", this.preco);   },   // Soma os preços dos serviços por categoria.   function (key, values) {     return Array.sum(values);   },   // Guarda o resultando no valor total de cada categoria em uma nova coleção.   { out: "faixa_de_preco_soma" } );
+db.servicos.aggregate([   // Atribui os serviços aos funcionarios que realizam eles.   {     $lookup: {       from: "funcionarios",       localField: "nome",       foreignField: "servicos",       as: "funcionarios"     }   },   // Exibe apenas as informações indicadas.   {     $project: {       _id: 0,       nome: 1,       "funcionarios.nome": 1     }   } ]);
+db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
+var cliente = db.clientes.findOne({ nome: "Lúcio Gomes" });
+cliente.telefone = "555-9999";
+db.clientes.save(cliente);
+var cliente = db.clientes.findOne({ nome: "Lúcio Gomes" });
+cliente.telefone = "555-9999";
+db.clientes.updateOne(cliente);
+db.clientes.find({ $where: "this.nome.length > 10" });
+db.profissionais.find({   disponibilidade: { $size: 5 } }).pretty();
+db.profissionais.find({   disponibilidade: { $size: 5 } });
+db.profissionais.find({ disponibilidade: { $size: 5 }});
+db.servicos.aggregate([   {     $project: {       _id: 0,       nome: 1,       preco: 1,       faixa_preco: {         $cond: { if: { $gte: ["$preco", 100] }, then: "Alto", else: "Baixo" }       }     }   } ]);
+db.funcionarios.find({   disponibilidade: { $size: 5 } }).pretty();
+db.funcionarios.find({   disponibilidade: { $size: 5 } });
+db.servicos.aggregate([   { $match: { preco: { $gte: 100 } } },   {     $group: {       _id: null,       totalServicos: { $sum: 1 },       precoMaximo: { $max: "$preco" },       precoMedio: { $avg: "$preco" }     }   },   {     $project: {       _id: 0,       qtdServicosPremium: "$totalServicos",       servicoMaisCaro: "$precoMaximo",       mediaPrecos: { $round: ["$precoMedio", 2] }     }   } ]);
+// profissionais com pelo menos 3 serviços cadastrados
+db.profissionais.find({   servicos: { $size: { $gt: 2 } } // Array de serviços com pelo menso 3 });
+// profissionais com pelo menos 3 serviços cadastrados
+db.profissionais.find({   servicos: { $size: { $gt: 2 } } // Array de serviços com pelo menso 3 });
+db.funcionarios.find({   disponibilidade: { $size: 5 } }).pretty();
+// Procura um cliente com email e telefone válidos
+db.clientes.findOne({   email: { $exists: true },  // email validado   $where: "this.telefone.length >= 8" // telefone validado });
+// Procura um cliente com email e telefone válidos
+db.clientes.findOne({   email: { $exists: true },  // email validado   $where: "this.telefone.length >= 8" // telefone validado });
+//Consulta de serviços PREMIUM (mais caros que 100 reais) (GROUP, SUM, MAX, AVG, PROJECT, MATCH)
+db.servicos.aggregate([   { $match: { preco: { $gte: 100 } } },   {     $group: {       _id: null,       totalServicos: { $sum: 1 },       precoMaximo: { $max: "$preco" },       precoMedio: { $avg: "$preco" }     }   },   {     $project: {       _id: 0,       qtdServicosPremium: "$totalServicos",       servicoMaisCaro: "$precoMaximo",       mediaPrecos: { $round: ["$precoMedio", 2] }     }   } ]);
+db.servicos.mapReduce(   function() {     emit(this._id, {        tipo: this.preco >= 100 ? "Premium" : "Padrao"      });   },   function(key, values) { return values[0]; },   { out: "servicos_classificados" } );
+// Muda nome dos resultados
+db.servicos_classificados.renameCollection("catalogo_servicos");
+// Serviços premium por cliente (LOOKUP, FILTER, PROJECT)
+db.clientes.aggregate([   {     $lookup: {        from: "servicos",       localField: "_id",       foreignField: "_id",       as: "historico"     }   },   {     $project: {        nome: 1,       servicosRelevantes: {         $filter: { // Só serviços premium (100+ reais)           input: "$historico",           as: "servico",           cond: { $gte: ["$$servico.preco", 100] }         }       }     }   } ]);

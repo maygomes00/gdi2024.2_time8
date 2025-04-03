@@ -10,7 +10,8 @@ db.clientes.insertMany([
     { "nome": "Mariana Oliveira", "telefone": "555-2109", "email": "marianatrabalho@email.com", "aniversario": "15/11/1998" },
     { "nome": "Tatiane Alves", "telefone": "555-6789", "email": "TataAlves@email.com", "aniversario": "17/06/1983" },
     { "nome": "Gabriel Santos", "telefone": "555-1123", "email": "gabriel.santos@email.com", "aniversario": "21/03/1982" },
-    { "nome": "Larissa Ferreira", "telefone": "555-7890", "aniversario": "05/12/1991" }
+    { "nome": "Larissa Ferreira", "telefone": "555-7890", "aniversario": "05/12/1991" },
+    { "nome": "Leo Lima", "telefone": "555-258", "aniversario": "14/02/1996" }
   ]);
   
 db.servicos.insertMany([

@@ -6,7 +6,7 @@ db.servicos.countDocuments({ preco: { $gte: 80 } });
 // Encontrar quais os serviços com preço maior ou igual a 80 e formatar a saída com PRETTY (FIND e PRETTY)
 db.servicos.find({ preco: { $gte: 80 } }).pretty();
 
-// Encontrar profissionais com disponibilidade às quintas-feiras (FIND e FILTER)
+// Encontrar profissionais com disponibilidade nas terças (FIND e FILTER)
 db.funcionarios.find({ disponibilidade: { $in: ["Terça"] } }).pretty();
 
 // Agregaçar e criar Preço médio dos serviços (AGGREGATE, AVG)
@@ -39,3 +39,14 @@ db.servicos.find().sort({ preco: -1 }).limit(3);
 db.servicos.createIndex({ nome: "text" });
 db.servicos.find({ $text: { $search: "Corte" } });
 
+// Clientes com nomes de menos de 10 caracteres (WHERE)
+db.clientes.find({ $where: "this.nome.length < 10" });
+
+// Encontrar funcionarios com exatamente 5 dias de disponibilidade (SIZE) 
+db.funcionarios.find({ disponibilidade: { $size: 5 } }).pretty();
+
+// Procura um cliente com email e telefone válidos
+db.clientes.findOne({
+  email: { $exists: true },  // email validado
+  $where: "this.telefone.length >= 8" // telefone validado
+});

@@ -46,3 +46,47 @@ db.servicos.aggregate([
     }
   }
 ]);
+
+//Consulta de serviços PREMIUM (mais caros que 100 reais) (GROUP, SUM, MAX, AVG, PROJECT, MATCH)
+db.servicos.aggregate([
+  { $match: { preco: { $gte: 100 } } },
+  {
+    $group: {
+      _id: null,
+      totalServicos: { $sum: 1 },
+      precoMaximo: { $max: "$preco" },
+      precoMedio: { $avg: "$preco" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      qtdServicosPremium: "$totalServicos",
+      servicoMaisCaro: "$precoMaximo",
+      mediaPrecos: { $round: ["$precoMedio", 2] }
+    }
+  }
+]);
+
+// Exibe apenas os funcionarios disponiveis na quinta-feira.
+db.funcionarios.aggregate([
+  {
+    $project: {
+      _id: 0,
+      nome: 1,
+      telefone: 1,
+      disponibilidade_quinta: {  // pega só quem tá disnponível na quinta
+        $filter: {
+          input: "$disponibilidade",
+          as: "dia",
+          cond: { $eq: ["$$dia", "Quinta"] } 
+        }
+      }
+    }
+  },
+  {
+    $match: {
+      "disponibilidade_quinta.0": { $exists: true }  // Só quem tem quinta disponível
+      }
+    }
+  ]);
